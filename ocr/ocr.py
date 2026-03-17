@@ -381,6 +381,111 @@ def find_postal_code_and_city(text: str) -> Tuple[Optional[str], Optional[str]]:
     return None, None
 
 # ---------------------------------------------------------------------------
+# Extraction du tableau (factures) : lignes, sous-total HT, TVA
+# ---------------------------------------------------------------------------
+
+def find_sous_total_ht(text: str) -> Optional[float]:
+    match = re.search(r'sous[- ]?total\s*HT\s*[:\s]*_?\s*(\d[\d\s]*[.,]\d{2})', text, re.IGNORECASE)
+    if match:
+        val = match.group(1).replace(' ', '').replace(',', '.')
+        try:
+            return float(val)
+        except ValueError:
+            pass
+    return None
+
+
+def find_tva(text: str) -> Optional[float]:
+    match = re.search(r'TVA\s*\(\d+\s*%\)\s*[:\s]*(\d[\d\s]*[.,]\d{2})', text, re.IGNORECASE)
+    if match:
+        val = match.group(1).replace(' ', '').replace(',', '.')
+        try:
+            return float(val)
+        except ValueError:
+            pass
+    return None
+
+
+def find_tva_taux(text: str) -> Optional[int]:
+    match = re.search(r'TVA\s*\((\d+)\s*%\)', text, re.IGNORECASE)
+    if match:
+        try:
+            return int(match.group(1))
+        except ValueError:
+            pass
+    return None
+
+
+def _parse_decimal(s: str) -> float:
+    return float(s.replace(' ', '').replace(',', '.'))
+
+
+def find_line_items(text: str) -> list:
+    """Extrait les lignes du tableau : description, quantité, prix unitaire, total."""
+    items = []
+
+    header_match = re.search(r'Total\s*\(EUR\)', text, re.IGNORECASE)
+    footer_match = re.search(r'Sous[- ]?total\s*HT', text, re.IGNORECASE)
+    if not header_match or not footer_match:
+        return items
+
+    zone = text[header_match.end():footer_match.start()]
+
+    zone = re.sub(
+        r'Conditions de paiement.*?(?:anticip[ée]\.?|Page\s*\d+)',
+        ' ', zone, flags=re.DOTALL | re.IGNORECASE
+    )
+    zone = re.sub(r'Page\s*\d+', ' ', zone, flags=re.IGNORECASE)
+    zone = re.sub(r'\s+', ' ', zone).strip()
+
+    if not zone:
+        return items
+
+    # Pattern principal : QTE (entier) + prix_unitaire (décimal) + total (décimal)
+    triplet_re = re.compile(r'(\d{1,4})\s+(\d+[.,]\d{2})\s+(\d+[.,]\d{2})')
+    matches = list(triplet_re.finditer(zone))
+
+    if matches:
+        last_end = 0
+        for m in matches:
+            desc = zone[last_end:m.start()].strip()
+            desc = re.sub(r'^[\d.,\s]+', '', desc).strip()
+
+            qte = int(m.group(1))
+            prix = _parse_decimal(m.group(2))
+            total = _parse_decimal(m.group(3))
+
+            items.append({
+                "description": desc if desc else None,
+                "quantite": qte,
+                "prix_unitaire": prix,
+                "total": total,
+            })
+            last_end = m.end()
+    else:
+        # Fallback : prix + total sans QTE visible (QTE déduit si possible)
+        pair_re = re.compile(r'(\d+[.,]\d{2})\s+(\d+[.,]\d{2})')
+        last_end = 0
+        for m in pair_re.finditer(zone):
+            desc = zone[last_end:m.start()].strip()
+            desc = re.sub(r'^[\d.,\s]+', '', desc).strip()
+
+            prix = _parse_decimal(m.group(1))
+            total = _parse_decimal(m.group(2))
+            qte = round(total / prix) if prix > 0 else None
+
+            items.append({
+                "description": desc if desc else None,
+                "quantite": qte,
+                "prix_unitaire": prix,
+                "total": total,
+            })
+            last_end = m.end()
+
+    return items
+
+
+# ---------------------------------------------------------------------------
 # Détection du type de document
 # ---------------------------------------------------------------------------
 
@@ -434,6 +539,13 @@ def extract_fields(text: str, include_empty: bool = False) -> Dict:
         "dates_trouvees": find_all_dates(text),
         "raw_text": text,
     }
+
+    if doc_type == "facture":
+        lignes = find_line_items(text)
+        data["lignes"] = lignes if lignes else None
+        data["sous_total_ht"] = find_sous_total_ht(text)
+        data["tva_taux"] = find_tva_taux(text)
+        data["tva_montant"] = find_tva(text)
 
     if include_empty:
         return data
