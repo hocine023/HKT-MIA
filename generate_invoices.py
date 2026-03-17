@@ -158,47 +158,26 @@ def generate_invoice_data(legitimate=True, scenario="normal"):
         falsifications = []
 
         if scenario == "siren_mismatch":
-            # SIREN qui ne correspond pas
             fake_siren = f"{random.randint(100000000, 999999999)}"
             invoice["emetteur"]["siren"] = fake_siren
             invoice["emetteur"]["siret"] = generate_siret(fake_siren)
             falsifications.append("SIREN ne correspond pas à l'entreprise")
 
-        elif scenario == "montant_aberrant":
-            # Total ne correspond pas à la somme des lignes
-            invoice["total_ttc"] = round(total_ttc * random.uniform(1.3, 2.5), 2)
-            falsifications.append("Total TTC incohérent avec les lignes")
-
         elif scenario == "date_incoherente":
-            # Date d'échéance AVANT la date de facture
             date_ech_fausse = date_facture - timedelta(days=random.randint(10, 90))
             invoice["date_echeance"] = date_ech_fausse.strftime("%d/%m/%Y")
             falsifications.append("Date d'échéance antérieure à la date de facture")
 
-        elif scenario == "tva_fausse":
-            # TVA mal calculée
-            invoice["tva"] = round(tva * random.uniform(0.3, 0.7), 2)
-            invoice["total_ttc"] = round(
-                sous_total + invoice["tva"], 2
-            )
-            falsifications.append("TVA incorrectement calculée")
-
         elif scenario == "entreprise_fictive":
-            # Entreprise complètement inventée
             invoice["emetteur"]["nom"] = fake.company()
             invoice["emetteur"]["siren"] = f"{random.randint(100000000, 999999999)}"
-            invoice["emetteur"]["siret"] = generate_siret(
-                invoice["emetteur"]["siren"]
-            )
+            invoice["emetteur"]["siret"] = generate_siret(invoice["emetteur"]["siren"])
             falsifications.append("Entreprise fictive avec faux SIREN")
 
         elif scenario == "expire":
-            # Facture très ancienne
             old_date = fake.date_between(start_date="-10y", end_date="-5y")
             invoice["date"] = old_date.strftime("%d/%m/%Y")
-            invoice["date_echeance"] = (old_date + timedelta(days=30)).strftime(
-                "%d/%m/%Y"
-            )
+            invoice["date_echeance"] = (old_date + timedelta(days=30)).strftime("%d/%m/%Y")
             falsifications.append("Document expiré (date très ancienne)")
 
         invoice["falsifications"] = falsifications
@@ -379,19 +358,10 @@ def generate_devis_data(legitimate=True, scenario="normal"):
             devis["emetteur"]["siret"] = generate_siret(fake_siren)
             falsifications.append("SIREN ne correspond pas a l'entreprise")
 
-        elif scenario == "montant_aberrant":
-            devis["total_ttc"] = round(total_ttc * random.uniform(1.3, 2.5), 2)
-            falsifications.append("Total TTC incoherent avec les lignes")
-
         elif scenario == "date_incoherente":
             date_val_fausse = date_devis - timedelta(days=random.randint(10, 60))
             devis["date_validite"] = date_val_fausse.strftime("%d/%m/%Y")
             falsifications.append("Date de validite anterieure a la date du devis")
-
-        elif scenario == "tva_fausse":
-            devis["tva"] = round(tva * random.uniform(0.3, 0.7), 2)
-            devis["total_ttc"] = round(sous_total + devis["tva"], 2)
-            falsifications.append("TVA incorrectement calculee")
 
         elif scenario == "entreprise_fictive":
             devis["emetteur"]["nom"] = fake.company()
@@ -654,19 +624,10 @@ def generate_bon_commande_data(legitimate=True, scenario="normal"):
             bdc["emetteur"]["siret"] = generate_siret(fake_siren)
             falsifications.append("SIREN emetteur ne correspond pas")
 
-        elif scenario == "montant_aberrant":
-            bdc["total_ttc"] = round(total_ttc * random.uniform(1.3, 2.5), 2)
-            falsifications.append("Total TTC incoherent avec les lignes")
-
         elif scenario == "date_incoherente":
             date_liv_fausse = date_commande - timedelta(days=random.randint(10, 60))
             bdc["date_livraison"] = date_liv_fausse.strftime("%d/%m/%Y")
             falsifications.append("Date de livraison anterieure a la date de commande")
-
-        elif scenario == "tva_fausse":
-            bdc["tva"] = round(tva * random.uniform(0.3, 0.7), 2)
-            bdc["total_ttc"] = round(sous_total + bdc["tva"], 2)
-            falsifications.append("TVA incorrectement calculee")
 
         elif scenario == "entreprise_fictive":
             bdc["fournisseur"]["nom"] = fake.company()
@@ -1008,9 +969,7 @@ SCAN_SCENARIOS = [
 
 FRAUD_SCENARIOS = [
     "siren_mismatch",
-    "montant_aberrant",
     "date_incoherente",
-    "tva_fausse",
     "entreprise_fictive",
     "expire",
 ]
