@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_02_siren_mismatch_bon_commande",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_02_siren_mismatch\\bon_commande_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_02_siren_mismatch\\clean\\bon_commande.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_02_siren_mismatch/bon_commande_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_02_siren_mismatch/clean/bon_commande.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "bon_commande",
   "document_type": "bon_commande",
@@ -10,7 +10,7 @@
     "emetteur": "SGN PARIS INVESTISSEMENTS",
     "siren": "005580501",
     "siret": "00558050113239",
-    "client": "Haithem HENOUDA",
+    "client": "Haïthem HENOUDA",
     "total_ttc": 34918.44,
     "date": "22/02/2026",
     "adresse": "47, avenue Dias, 13151 GarciaBourg",
@@ -47,7 +47,7 @@
       "nom": "SNC BARRE",
       "siren": "005620158",
       "siret": "00562015847053",
-      "adresse": "38, boulevard Julie Briand, 27652 Delannoy"
+      "adresse": "38, boulevard J ulie Briand, 27652 Delannoy"
     }
   }
 }

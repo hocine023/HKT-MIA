@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_01_normal_facture",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_01_normal\\facture_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_01_normal\\clean\\facture.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_01_normal/facture_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_01_normal/clean/facture.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "facture",
   "document_type": "facture",
@@ -15,14 +15,14 @@
     "date": "19/02/2026",
     "adresse": null,
     "code_postal": "28242",
-    "ville": "Saint Jeannenec",
+    "ville": "Saint",
     "dates_trouvees": [
       "19/02/2026",
       "20/05/2026"
     ],
     "lignes": [
       {
-        "description": "Synergize plug-and-play deliverables",
+        "description": "S ynergize plug-and-play deliverables",
         "quantite": 15,
         "prix_unitaire": 298.74,
         "total": 4481.1

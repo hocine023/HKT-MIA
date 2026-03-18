@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_01_normal_devis",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_01_normal\\devis_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_01_normal\\clean\\devis.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_01_normal/devis_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_01_normal/clean/devis.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "devis",
   "document_type": "devis",
@@ -15,7 +15,7 @@
     "date": "16/03/2026",
     "adresse": null,
     "code_postal": "28242",
-    "ville": "Saint Jeannenec",
+    "ville": "Saint",
     "dates_trouvees": [
       "16/03/2026",
       "30/04/2026"
