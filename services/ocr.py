@@ -58,8 +58,9 @@ if os.path.exists(os.path.join(_project_tessdata_dir, "fra.traineddata")):
 # ---------------------------------------------------------------------------
 
 def _pdf_to_images(pdf_path: str):
-    if POPPLER_PATH:
-        pages = convert_from_path(pdf_path, dpi=180, poppler_path=POPPLER_PATH)
+    poppler_path = POPPLER_PATH if (POPPLER_PATH and os.path.exists(POPPLER_PATH)) else None
+    if poppler_path:
+        pages = convert_from_path(pdf_path, dpi=180, poppler_path=poppler_path)
     else:
         pages = convert_from_path(pdf_path, dpi=180)
 
@@ -386,6 +387,54 @@ def find_postal_code_and_city(text: str) -> Tuple[Optional[str], Optional[str]]:
     return None, None
 
 # ---------------------------------------------------------------------------
+# Extraction fournisseur (bon de commande uniquement)
+# ---------------------------------------------------------------------------
+
+def find_fournisseur(text: str) -> Optional[Dict]:
+    """Extrait les infos du fournisseur pour un bon de commande (nom, siren, siret, adresse)."""
+    match = re.search(
+        r'Fournisseur\s*:\s*(.+?)\s+SIREN\s*[:\s]*(\d[\d\s]{7,10})\s*\|\s*SIRET\s*[:\s]*(\d[\d\s]{12,15})(?=\s+(?:\d{1,4}\s*,|[A-Za-z])|\s+Tel:|\s*Designation)',
+        text, re.IGNORECASE | re.DOTALL
+    )
+    if not match:
+        return None
+
+    nom = match.group(1).strip()
+    siren = re.sub(r'\s', '', match.group(2))[:9]
+    siret = re.sub(r'\s', '', match.group(3))[:14]
+    if len(siret) != 14:
+        siret = None
+
+    # Adresse : entre SIRET et Tel: ou Designation
+    block_start = match.end()
+    block_end = len(text)
+    for sep in (r'Designation', r'Responsable', r'Prix unit', r'Qte\b', r'Qté'):
+        m = re.search(sep, text[block_start:], re.IGNORECASE)
+        if m:
+            block_end = block_start + m.start()
+            break
+    block = text[block_start:block_end]
+
+    addr_match = re.search(
+        r'(\d{1,4}\s*,\s*(?:rue|avenue|av\.?|boulevard|bd|chemin|route|impasse|allée|place|quai)\s+[^,]+,\s*\d{5}\s+[A-Za-zÀ-ÿ\-]+(?:\s+[A-Za-zÀ-ÿ\-]+)*?)(?=\s*Tel:|\s*\||\s*Designation|$)',
+        block, re.IGNORECASE
+    )
+    if not addr_match:
+        addr_match = re.search(
+            r'((?:rue|avenue|av\.?|boulevard|bd|chemin|route|impasse|allée|place|quai)\s+[^,]+,\s*\d{5}\s+[A-Za-zÀ-ÿ\-]+(?:\s+[A-Za-zÀ-ÿ\-]+)*?)(?=\s*Tel:|\s*\||\s*Designation|$)',
+            block, re.IGNORECASE
+        )
+    adresse = addr_match.group(1).strip() if addr_match and len(addr_match.group(1)) < _MAX_ADDRESS_LENGTH else None
+
+    result = {"nom": nom, "siren": siren}
+    if siret:
+        result["siret"] = siret
+    if adresse:
+        result["adresse"] = adresse
+    return result
+
+
+# ---------------------------------------------------------------------------
 # Extraction du tableau (factures) : lignes, sous-total HT, TVA
 # ---------------------------------------------------------------------------
 
@@ -545,12 +594,21 @@ def extract_fields(text: str, include_empty: bool = False) -> Dict:
         "raw_text": text,
     }
 
-    if doc_type == "facture" or doc_type == "devis" or doc_type == "bon_commande":
+    if doc_type == "facture" or doc_type == "devis":
         lignes = find_line_items(text)
         data["lignes"] = lignes if lignes else None
         data["sous_total_ht"] = find_sous_total_ht(text)
         data["tva_taux"] = find_tva_taux(text)
         data["tva_montant"] = find_tva(text)
+
+    if doc_type == "bon_commande":
+        lignes = find_line_items(text)
+        data["lignes"] = lignes if lignes else None
+        data["sous_total_ht"] = find_sous_total_ht(text)
+        data["tva_taux"] = find_tva_taux(text)
+        data["tva_montant"] = find_tva(text)
+        fournisseur = find_fournisseur(text)
+        data["fournisseur"] = fournisseur
 
     if include_empty:
         return data

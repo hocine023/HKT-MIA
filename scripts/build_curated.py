@@ -39,6 +39,7 @@ def build_curated_file(clean_file: Path):
             "sous_total_ht": None,
             "tva_taux": None,
             "tva_montant": None,
+            "fournisseur": None,
         }
 
     scenario_dir = clean_file.parent.name
@@ -71,6 +72,7 @@ def build_curated_file(clean_file: Path):
             "sous_total_ht": extracted.get("sous_total_ht"),
             "tva_taux": extracted.get("tva_taux"),
             "tva_montant": extracted.get("tva_montant"),
+            "fournisseur": extracted.get("fournisseur"),
         },
        
     }

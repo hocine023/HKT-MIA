@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_03_fake_total_facture",
-  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_03_fake_total\\facture_ocr.json",
-  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_03_fake_total\\clean\\facture.pdf",
+  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_03_fake_total\\facture_ocr.json",
+  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_03_fake_total\\clean\\facture.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "facture",
   "document_type": "facture",
@@ -60,6 +60,7 @@
     ],
     "sous_total_ht": 20322.82,
     "tva_taux": 20,
-    "tva_montant": 4064.56
+    "tva_montant": 4064.56,
+    "fournisseur": null
   }
 }

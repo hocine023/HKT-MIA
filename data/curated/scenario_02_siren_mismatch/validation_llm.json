@@ -2,42 +2,42 @@
   "global_status": "non_conforme",
   "checks": [
     {
-      "rule": "presence_documents_expected",
+      "rule": "presence_des_documents_attendus",
       "status": "passed",
-      "message": "Les documents bon_commande, devis et facture sont présents."
+      "message": "Les trois documents (bon_commande, devis, facture) sont présents."
     },
     {
-      "rule": "presence_minimum_fields",
+      "rule": "presence_des_champs_minimums_utiles",
       "status": "passed",
-      "message": "Tous les champs obligatoires sont présents dans chaque document."
+      "message": "Tous les documents contiennent les champs obligatoires requis."
     },
     {
-      "rule": "coherence_siren_devis_facture",
+      "rule": "coherence_du_siren_entre_devis_facture_et_fournisseur_BDC",
       "status": "failed",
-      "message": "Le SIREN du devis (176667861) ne correspond pas à celui de la facture (005620158)."
+      "message": "Le siren du devis (176667861) ne correspond pas au siren du fournisseur du bon de commande et de la facture (005620158)."
     },
     {
-      "rule": "coherence_siret_devis_facture",
+      "rule": "coherence_du_siret_entre_devis_facture_et_fournisseur_BDC",
       "status": "failed",
-      "message": "Le SIRET du devis (17666786179841) ne correspond pas à celui de la facture (00562015847053)."
+      "message": "Le siret du devis (17666786179841) ne correspond pas au siret du fournisseur du bon de commande et de la facture (00562015847053)."
     },
     {
-      "rule": "coherence_client_devis_facture",
+      "rule": "coherence_du_client_entre_devis_facture_et_fournisseur_BDC",
       "status": "passed",
-      "message": "Le client est identique dans le devis et la facture (Haithem HENOUDA)."
+      "message": "Le client est identique dans les trois documents : Haithem HENOUDA."
     },
     {
-      "rule": "facture_total_ttc_consistency",
+      "rule": "facture_sous_total_ht_plus_tva_montant_egal_total_ttc",
       "status": "passed",
-      "message": "Sous_total_ht (5393.97) + TVA montant (1078.79) = Total TTC (6472.76)."
+      "message": "5393.97 + 1078.79 = 6472.76, ce qui correspond au total_ttc de la facture."
     },
     {
-      "rule": "facture_lignes_sum_consistency",
+      "rule": "facture_somme_des_lignes_egale_sous_total_ht",
       "status": "passed",
-      "message": "La somme des lignes (2208.96 + 3185.01 = 5393.97) correspond au sous_total_ht."
+      "message": "2208.96 + 3185.01 = 5393.97, ce qui correspond au sous_total_ht de la facture."
     },
     {
-      "rule": "facture_tva_consistency",
+      "rule": "facture_tva_montant_coherent_avec_tva_taux",
       "status": "passed",
       "message": "Le montant de TVA (1078.79) correspond à 20% du sous_total_ht (5393.97)."
     }
@@ -45,12 +45,12 @@
   "anomalies": [
     {
       "type": "siren_mismatch",
-      "details": "Devis SIREN: 176667861, Facture SIREN: 005620158"
+      "details": "Devis siren = 176667861, alors que bon_commande et facture utilisent siren = 005620158."
     },
     {
       "type": "siret_mismatch",
-      "details": "Devis SIRET: 17666786179841, Facture SIRET: 00562015847053"
+      "details": "Devis siret = 17666786179841, alors que bon_commande et facture utilisent siret = 00562015847053."
     }
   ],
-  "confidence": 1.0
+  "confidence": 0.96
 }

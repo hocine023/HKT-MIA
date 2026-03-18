@@ -1,6 +1,6 @@
 {
   "document_id": "scenario_03_fake_total_devis",
-  "source_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_03_fake_total\\clean\\devis.pdf",
+  "source_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_03_fake_total\\clean\\devis.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "devis",
   "ocr_text_raw": "SCI MAUDUIT SIREN: 005780515 | SIRET: 00578051589734 14, avenue Baron, 06103 Pires Tel: +33 4 11 27 86 80 | sanchezmarie@morvan.com DEVIS N. Devis: DEV-26883 Date: 08/03/2026 Valide jusqu'au: 23/03/2026 Client : Erwan MARCHAND 55, rue Laurent, 84297 Boulanger-la-Forêt leleuroger@example.com Description Qte Prix unit. (EUR) Total (EUR) Enable revolutionary content 14 45.04 630.56 Disintermediate revolutionary convergenc 6 332.91 1997.46 Sous-total HT: _ 2628.02 EUR TVA (20%): 525.60 EUR Total TTC: 3153.62 EUR Acompte de 30% a la commande, solde a la livraison. Signature du client precedee de la mention 'Bon pour accord' : Page 1",

@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_01_normal_devis",
-  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_01_normal\\devis_ocr.json",
-  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_01_normal\\clean\\devis.pdf",
+  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_01_normal\\devis_ocr.json",
+  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_01_normal\\clean\\devis.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "devis",
   "document_type": "devis",
@@ -36,6 +36,7 @@
     ],
     "sous_total_ht": 1611.02,
     "tva_taux": 20,
-    "tva_montant": 322.2
+    "tva_montant": 322.2,
+    "fournisseur": null
   }
 }

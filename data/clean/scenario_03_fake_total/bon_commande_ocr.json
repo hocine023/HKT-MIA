@@ -1,6 +1,6 @@
 {
   "document_id": "scenario_03_fake_total_bon_commande",
-  "source_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_03_fake_total\\clean\\bon_commande.pdf",
+  "source_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_03_fake_total\\clean\\bon_commande.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "bon_commande",
   "ocr_text_raw": "SOCIETE DES PRODUITS EN BETON ET MATERIAUX DE CONSTR SIREN: 006580161 | SIRET: 00658016111916 250, rue Inès Aubry, 05211 Gay-sur-Barre Tel: 0586981693 | benjamin60@marchal.fr BON DE COMMANDE N. BDC: BDC-56692 Date: 04/03/2026 Livraison prevue: 18/03/2026 Responsable: Erwan MARCHAND Fournisseur : SCI MAUDUIT SIREN: 005780515 | SIRET: 00578051589734 14, avenue Baron, 06103 Pires Tel: +33 4 11 27 86 80 | sanchezmarie@morvan.com Designation Qte Prix unit. (EUR) Total (EUR) Formation professionnelle 26 1062.20 27617.20 Cables reseau Cat6 30 175.73 5271.90 Papier A4 (ramette x5) 16 895.26 14324.16 Maintenance serveur 17 897.68 15260.56 Prestation de conseil 38 482.28 18326.64 Licences logicielles 9 613.88 5524.92 Sous-total HT: 86325.38 EUR TVA (20%): 17265.08 EUR Total TTC:103590.46 EUR Livraison sur site sous 15 jours ouvrables. Page 1",

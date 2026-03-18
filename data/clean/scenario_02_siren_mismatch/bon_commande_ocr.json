@@ -1,6 +1,6 @@
 {
   "document_id": "scenario_02_siren_mismatch_bon_commande",
-  "source_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_02_siren_mismatch\\clean\\bon_commande.pdf",
+  "source_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_02_siren_mismatch\\clean\\bon_commande.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "bon_commande",
   "ocr_text_raw": "SGN PARIS INVESTISSEMENTS SIREN: 005580501 | SIRET: 00558050113239 47, avenue Dias, 13151 GarciaBourg Tel: +33 3 21 67 73 60 | alexbernard@aubry.fr BON DE COMMANDE N. BDC: BDC-44593 Date: 22/02/2026 Livraison prevue: 08/04/2026 Responsable: Haithem HENOUDA Fournisseur : SNC BARRE SIREN: 005620158 | SIRET: 00562015847053 38, boulevard Julie Briand, 27652 Delannoy Tel: 0546578713 | christophemaillot@pruvost.net Designation Qte Prix unit. (EUR) Total (EUR) Hebergement cloud 13 846.96 11010.48 Fournitures de bureau 43 277.34 11925.62 Materiel informatique 6 1027.10 6162.60 Sous-total HT: 29098.70 EUR TVA (20%): 5819.74 EUR Total TTC: 34918.44 EUR Livraison franco de port a l'adresse indiquee. Page 1",

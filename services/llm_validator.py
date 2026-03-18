@@ -32,9 +32,9 @@ Tu dois :
 Règles à vérifier :
 - présence des documents attendus
 - présence des champs minimums utiles
-- cohérence du siren entre devis et facture
-- cohérence du siret entre devis et facture
-- cohérence du client entre devis et facture
+- cohérence du siren entre devis et facture et fournisseur BDC
+- cohérence du siret entre devis et facture et fournisseur BDC
+- cohérence du client entre devis et facture et fournisseur BDC
 - pour la facture : sous_total_ht + tva_montant = total_ttc
 - pour la facture : somme des lignes = sous_total_ht
 - pour la facture : tva_montant cohérent avec tva_taux
