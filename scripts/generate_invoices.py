@@ -75,10 +75,7 @@ def sanitize(text):
     return str(text).encode("latin-1", errors="replace").decode("latin-1")
 
 
-# =========================================================
-# PDF 
-# =========================================================
-
+# PDF
 class InvoicePDF(FPDF):
     def header(self):
         pass
@@ -89,10 +86,7 @@ class InvoicePDF(FPDF):
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
 
 
-# =========================================================
 # GENERATION FACTURE
-# =========================================================
-
 def generate_invoice_data(legitimate=True, scenario="normal"):
     emetteur = get_random_company()
     client_name = random_collegue()
@@ -346,10 +340,7 @@ def render_invoice_image(invoice, width=1240, height=1754):
     return img
 
 
-# =========================================================
 # GENERATION DEVIS
-# =========================================================
-
 def generate_devis_data(legitimate=True, scenario="normal"):
     emetteur = get_random_company()
     client_name = random_collegue()
@@ -602,10 +593,7 @@ def render_devis_image(devis, width=1240, height=1754):
     return img
 
 
-# =========================================================
 # GENERATION BON DE COMMANDE
-# =========================================================
-
 def generate_bon_commande_data(legitimate=True, scenario="normal"):
     emetteur = get_random_company()
     fournisseur = get_random_company()
@@ -869,10 +857,7 @@ def render_bon_commande_image(bdc, width=1240, height=1754):
     return img
 
 
-# =========================================================
 # EFFETS SCAN
-# =========================================================
-
 def apply_scan_effects(image, effects=None):
     if effects is None:
         effects = ["rotation", "flou"]
@@ -884,7 +869,7 @@ def apply_scan_effects(image, effects=None):
         img = img.rotate(angle, expand=True, fillcolor=(255, 255, 255))
 
     if "flou" in effects:
-        radius = random.uniform(0.5, 2.0)
+        radius = random.uniform(0.3, 1.0)
         img = img.filter(ImageFilter.GaussianBlur(radius=radius))
 
     if "bruit" in effects:
@@ -940,10 +925,7 @@ SCAN_SCENARIOS = [
 ]
 
 
-# =========================================================
 # HELPERS METIER
-# =========================================================
-
 def create_supplier_base():
     company = get_random_company()
     siren = company["siren"]
@@ -1013,10 +995,7 @@ def make_same_business_case():
     }
 
 
-# =========================================================
 # SCENARIOS METIER
-# =========================================================
-
 def scenario_normal(bundle):
     bundle["devis"]["scenario"] = "normal"
     bundle["bon_commande"]["scenario"] = "normal"
@@ -1095,10 +1074,7 @@ SCENARIO_BUILDERS = {
 }
 
 
-# =========================================================
 # RENDU BRUITE
-# =========================================================
-
 def save_noisy_versions(bundle, noisy_dir: Path):
     noisy_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1115,10 +1091,7 @@ def save_noisy_versions(bundle, noisy_dir: Path):
     facture_img.save(noisy_dir / "facture_scan.png")
 
 
-# =========================================================
 # SAUVEGARDE D'UN CAS
-# =========================================================
-
 def save_case(case_dir: Path, bundle_result: dict):
     bundle = bundle_result["bundle"]
     expected = bundle_result["expected"]
@@ -1186,10 +1159,7 @@ def save_case(case_dir: Path, bundle_result: dict):
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
 
-# =========================================================
 # GENERATION FINALE
-# =========================================================
-
 def generate_data(output_dir="data/raw"):
     base = Path(output_dir)
     base.mkdir(parents=True, exist_ok=True)
@@ -1228,10 +1198,7 @@ def generate_data(output_dir="data/raw"):
     print(f"Dossier: {base}")
 
 
-# =========================================================
 # MAIN
-# =========================================================
-
 if __name__ == "__main__":
     load_siren_data(n=200)
     generate_data(output_dir="../data/raw")
