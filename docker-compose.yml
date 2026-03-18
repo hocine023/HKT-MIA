@@ -10,6 +10,9 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
     HF_TOKEN: ${HF_TOKEN:-MonToken}
+    MONGO_URI: mongodb://mongo:27017
+    MONGO_DB: hkt_mia
+    AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
     PYTHONPATH: /opt/airflow
   volumes:
     - ./dags:/opt/airflow/dags
@@ -17,10 +20,13 @@ x-airflow-common:
     - ./services:/opt/airflow/services
     - ./data:/opt/airflow/data
     - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
   depends_on:
     &airflow-common-depends-on
     postgres:
       condition: service_healthy
+    mongo:
+      condition: service_started
 
 services:
   postgres:
@@ -84,5 +90,20 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    restart: always
+
 volumes:
   postgres-db-volume:
+  mongo-data:

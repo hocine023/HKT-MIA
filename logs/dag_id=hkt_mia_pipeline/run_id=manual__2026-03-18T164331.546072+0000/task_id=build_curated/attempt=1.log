@@ -1,0 +1,29 @@
+[2026-03-18T16:43:56.499+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2026-03-18T16:43:56.522+0000] {taskinstance.py:2603} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: hkt_mia_pipeline.build_curated manual__2026-03-18T16:43:31.546072+00:00 [queued]>
+[2026-03-18T16:43:56.535+0000] {taskinstance.py:2603} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: hkt_mia_pipeline.build_curated manual__2026-03-18T16:43:31.546072+00:00 [queued]>
+[2026-03-18T16:43:56.537+0000] {taskinstance.py:2856} INFO - Starting attempt 1 of 2
+[2026-03-18T16:43:56.561+0000] {taskinstance.py:2879} INFO - Executing <Task(BashOperator): build_curated> on 2026-03-18 16:43:31.546072+00:00
+[2026-03-18T16:43:56.569+0000] {standard_task_runner.py:72} INFO - Started process 451 to run task
+[2026-03-18T16:43:56.573+0000] {standard_task_runner.py:104} INFO - Running: ['***', 'tasks', 'run', 'hkt_mia_pipeline', 'build_curated', 'manual__2026-03-18T16:43:31.546072+00:00', '--job-id', '23', '--raw', '--subdir', 'DAGS_FOLDER/hkt_mia_pipeline_dag.py', '--cfg-path', '/tmp/tmp_6ubepta']
+[2026-03-18T16:43:56.577+0000] {standard_task_runner.py:105} INFO - Job 23: Subtask build_curated
+[2026-03-18T16:43:56.639+0000] {task_command.py:467} INFO - Running <TaskInstance: hkt_mia_pipeline.build_curated manual__2026-03-18T16:43:31.546072+00:00 [running]> on host 7439bb81005e
+[2026-03-18T16:43:56.787+0000] {taskinstance.py:3122} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='hkt-mia' AIRFLOW_CTX_DAG_ID='hkt_mia_pipeline' AIRFLOW_CTX_TASK_ID='build_curated' AIRFLOW_CTX_EXECUTION_DATE='2026-03-18T16:43:31.546072+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-18T16:43:31.546072+00:00'
+[2026-03-18T16:43:56.790+0000] {taskinstance.py:731} INFO - ::endgroup::
+[2026-03-18T16:43:56.830+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-03-18T16:43:56.836+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/*** && python /opt/***/scripts/build_curated.py']
+[2026-03-18T16:43:56.852+0000] {subprocess.py:86} INFO - Output:
+[2026-03-18T16:43:59.042+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_01_normal/bon_commande_structured.json
+[2026-03-18T16:43:59.043+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_01_normal/devis_structured.json
+[2026-03-18T16:43:59.044+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_01_normal/facture_structured.json
+[2026-03-18T16:43:59.045+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_02_siren_mismatch/bon_commande_structured.json
+[2026-03-18T16:43:59.046+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_02_siren_mismatch/devis_structured.json
+[2026-03-18T16:43:59.047+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_02_siren_mismatch/facture_structured.json
+[2026-03-18T16:43:59.048+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_03_fake_total/bon_commande_structured.json
+[2026-03-18T16:43:59.049+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_03_fake_total/devis_structured.json
+[2026-03-18T16:43:59.050+0000] {subprocess.py:93} INFO - [CURATED] /opt/***/data/curated/scenario_03_fake_total/facture_structured.json
+[2026-03-18T16:43:59.623+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-03-18T16:43:59.699+0000] {taskinstance.py:340} INFO - ::group::Post task execution logs
+[2026-03-18T16:43:59.701+0000] {taskinstance.py:352} INFO - Marking task as SUCCESS. dag_id=hkt_mia_pipeline, task_id=build_curated, run_id=manual__2026-03-18T16:43:31.546072+00:00, execution_date=20260318T164331, start_date=20260318T164356, end_date=20260318T164359
+[2026-03-18T16:43:59.764+0000] {local_task_job_runner.py:261} INFO - Task exited with return code 0
+[2026-03-18T16:43:59.793+0000] {taskinstance.py:3891} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-03-18T16:43:59.800+0000] {local_task_job_runner.py:240} INFO - ::endgroup::

@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 
 from services.ocr import run_ocr, normalize_text, detect_document_type
+from services.mongo import get_collection
 
 RAW_DIR = BASE_DIR / "data" / "raw"
 CLEAN_DIR = BASE_DIR / "data" / "clean"
@@ -39,6 +40,10 @@ def build_clean_file(file_path: Path):
 
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    # Store in MongoDB clean_zone
+    col = get_collection("clean_zone")
+    col.update_one({"document_id": payload["document_id"]}, {"$set": payload}, upsert=True)
 
     print(f"[CLEAN] {out_file}")
 

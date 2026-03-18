@@ -1,0 +1,29 @@
+[2026-03-18T14:13:10.609+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2026-03-18T14:13:10.756+0000] {taskinstance.py:2603} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: hkt_mia_pipeline.build_clean manual__2026-03-18T14:13:03.268869+00:00 [queued]>
+[2026-03-18T14:13:10.815+0000] {taskinstance.py:2603} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: hkt_mia_pipeline.build_clean manual__2026-03-18T14:13:03.268869+00:00 [queued]>
+[2026-03-18T14:13:10.816+0000] {taskinstance.py:2856} INFO - Starting attempt 1 of 2
+[2026-03-18T14:13:10.908+0000] {taskinstance.py:2879} INFO - Executing <Task(BashOperator): build_clean> on 2026-03-18 14:13:03.268869+00:00
+[2026-03-18T14:13:10.955+0000] {standard_task_runner.py:72} INFO - Started process 178 to run task
+[2026-03-18T14:13:11.079+0000] {standard_task_runner.py:104} INFO - Running: ['***', 'tasks', 'run', 'hkt_mia_pipeline', 'build_clean', 'manual__2026-03-18T14:13:03.268869+00:00', '--job-id', '9', '--raw', '--subdir', 'DAGS_FOLDER/hkt_mia_pipeline_dag.py', '--cfg-path', '/tmp/tmpjn0rlfad']
+[2026-03-18T14:13:11.144+0000] {standard_task_runner.py:105} INFO - Job 9: Subtask build_clean
+[2026-03-18T14:13:11.674+0000] {task_command.py:467} INFO - Running <TaskInstance: hkt_mia_pipeline.build_clean manual__2026-03-18T14:13:03.268869+00:00 [running]> on host f76ef240ceb5
+[2026-03-18T14:13:12.308+0000] {taskinstance.py:3122} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='hkt-mia' AIRFLOW_CTX_DAG_ID='hkt_mia_pipeline' AIRFLOW_CTX_TASK_ID='build_clean' AIRFLOW_CTX_EXECUTION_DATE='2026-03-18T14:13:03.268869+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-18T14:13:03.268869+00:00'
+[2026-03-18T14:13:12.337+0000] {taskinstance.py:731} INFO - ::endgroup::
+[2026-03-18T14:13:12.728+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-03-18T14:13:12.753+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/*** && python /opt/***/scripts/build_clean.py']
+[2026-03-18T14:13:12.862+0000] {subprocess.py:86} INFO - Output:
+[2026-03-18T14:13:37.029+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_01_normal/bon_commande_ocr.json
+[2026-03-18T14:13:37.031+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_01_normal/devis_ocr.json
+[2026-03-18T14:13:37.033+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_01_normal/facture_ocr.json
+[2026-03-18T14:13:37.035+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_02_siren_mismatch/bon_commande_ocr.json
+[2026-03-18T14:13:37.036+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_02_siren_mismatch/devis_ocr.json
+[2026-03-18T14:13:37.037+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_02_siren_mismatch/facture_ocr.json
+[2026-03-18T14:13:37.040+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_03_fake_total/bon_commande_ocr.json
+[2026-03-18T14:13:37.043+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_03_fake_total/devis_ocr.json
+[2026-03-18T14:13:37.045+0000] {subprocess.py:93} INFO - [CLEAN] /opt/***/data/clean/scenario_03_fake_total/facture_ocr.json
+[2026-03-18T14:13:37.235+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-03-18T14:13:37.348+0000] {taskinstance.py:340} INFO - ::group::Post task execution logs
+[2026-03-18T14:13:37.350+0000] {taskinstance.py:352} INFO - Marking task as SUCCESS. dag_id=hkt_mia_pipeline, task_id=build_clean, run_id=manual__2026-03-18T14:13:03.268869+00:00, execution_date=20260318T141303, start_date=20260318T141310, end_date=20260318T141337
+[2026-03-18T14:13:37.426+0000] {local_task_job_runner.py:261} INFO - Task exited with return code 0
+[2026-03-18T14:13:37.506+0000] {taskinstance.py:3891} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-03-18T14:13:37.519+0000] {local_task_job_runner.py:240} INFO - ::endgroup::

@@ -10,18 +10,19 @@ export const CompliancePage = () => {
 
   const { status, anomalies } = currentBatch.validation;
   const isConforme = status === 'conforme';
+  const isWarning = status === 'à vérifier' || status === 'a_verifier';
 
   return (
     <div className="p-8 max-w-4xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-3 mb-8 border-b pb-4">
-        <ShieldAlert className={isConforme ? "text-green-600" : "text-red-600"} size={32} />
+        <ShieldAlert className={isConforme ? "text-green-600" : isWarning ? "text-amber-500" : "text-red-600"} size={32} />
         <h1 className="text-2xl font-bold text-slate-800">3. Outil de Conformité</h1>
       </div>
 
       <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
         <div className="flex items-center gap-4 mb-8">
           <span className="text-lg font-semibold text-slate-600">Statut global :</span>
-          <span className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isConforme ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+          <span className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isConforme ? 'bg-green-100 text-green-700' : isWarning ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
             {isConforme ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
             {status.replace('_', ' ')}
           </span>

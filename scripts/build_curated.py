@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 
 from services.ocr import extract_fields, DocumentTypeNotSupportedError
+from services.mongo import get_collection
 
 CLEAN_DIR = BASE_DIR / "data" / "clean"
 CURATED_DIR = BASE_DIR / "data" / "curated"
@@ -79,6 +80,10 @@ def build_curated_file(clean_file: Path):
 
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    # Store in MongoDB curated_zone
+    col = get_collection("curated_zone")
+    col.update_one({"document_id": payload["document_id"]}, {"$set": payload}, upsert=True)
 
     print(f"[CURATED] {out_file}")
 

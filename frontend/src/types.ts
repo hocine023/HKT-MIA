@@ -1,4 +1,4 @@
-export type DocumentStatus = 'conforme' | 'à vérifier' | 'non_conforme';
+export type DocumentStatus = 'conforme' | 'à vérifier' | 'non_conforme' | 'a_verifier';
 
 export interface ExtractedFields {
   company_name?: string;

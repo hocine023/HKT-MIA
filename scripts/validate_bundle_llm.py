@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 
 from services.llm_validator import validate_bundle_with_llm
+from services.mongo import get_collection
 
 CURATED_DIR = BASE_DIR / "data" / "curated"
 
@@ -36,6 +37,14 @@ def validate_scenario(scenario_dir: Path):
     output_file = scenario_dir / "validation_llm.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
+
+    # Store validation in MongoDB curated_zone
+    col = get_collection("curated_zone")
+    col.update_one(
+        {"scenario_id": bundle["scenario_id"], "_type": "validation"},
+        {"$set": {"scenario_id": bundle["scenario_id"], "_type": "validation", **result}},
+        upsert=True,
+    )
 
     print(f"[VALIDATION_LLM] {output_file}")
 

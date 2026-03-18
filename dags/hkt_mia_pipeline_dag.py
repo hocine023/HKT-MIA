@@ -2,9 +2,10 @@
 HKT-MIA Document Processing Pipeline DAG
 
 Pipeline stages:
-  1. build_clean  – OCR on raw PDFs/images → clean JSON (data/clean/)
-  2. build_curated – Extract structured fields  → curated JSON (data/curated/)
-  3. validate_llm  – LLM cross-document validation → validation JSON
+  0. ingest_raw    – Store raw files metadata in MongoDB raw_zone
+  1. build_clean   – OCR on raw PDFs/images → clean JSON (data/clean/) + MongoDB clean_zone
+  2. build_curated – Extract structured fields  → curated JSON (data/curated/) + MongoDB curated_zone
+  3. validate_llm  – LLM cross-document validation → validation JSON + MongoDB curated_zone
 """
 
 from datetime import datetime
@@ -21,12 +22,17 @@ default_args = {
 with DAG(
     dag_id="hkt_mia_pipeline",
     default_args=default_args,
-    description="OCR → Structured extraction → LLM validation",
+    description="Raw ingestion → OCR → Structured extraction → LLM validation",
     schedule=None,
     start_date=datetime(2025, 1, 1),
     catchup=False,
     tags=["hkt-mia", "ocr", "llm"],
 ) as dag:
+
+    ingest_raw = BashOperator(
+        task_id="ingest_raw",
+        bash_command=f"cd /opt/airflow && python {SCRIPTS_DIR}/ingest_raw.py",
+    )
 
     build_clean = BashOperator(
         task_id="build_clean",
@@ -43,4 +49,4 @@ with DAG(
         bash_command=f"cd /opt/airflow && python {SCRIPTS_DIR}/validate_bundle_llm.py",
     )
 
-    build_clean >> build_curated >> validate_llm
+    ingest_raw >> build_clean >> build_curated >> validate_llm

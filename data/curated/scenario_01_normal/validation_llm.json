@@ -2,51 +2,51 @@
   "global_status": "a_verifier",
   "checks": [
     {
-      "rule": "presence_des_documents_attendus",
+      "rule": "presence_documents_expected",
       "status": "passed",
-      "message": "Les documents bon_commande, devis et facture sont présents."
+      "message": "Les trois documents requis (bon_commande, devis, facture) sont présents."
     },
     {
-      "rule": "presence_champs_minimums_utiles",
+      "rule": "presence_minimum_fields",
       "status": "passed",
       "message": "Tous les documents contiennent les champs obligatoires (numero, siren, siret, client, total_ttc, sous_total_ht, tva_taux, tva_montant, lignes)."
     },
     {
-      "rule": "coherence_siren_entre_devis_facture_et_fournisseur_BDC",
+      "rule": "coherence_siren",
       "status": "passed",
-      "message": "Le SIREN 006720049 est identique dans le devis, la facture et le fournisseur du bon de commande."
+      "message": "Le SIREN est identique dans le devis, la facture et le fournisseur du bon de commande (006720049)."
     },
     {
-      "rule": "coherence_siret_entre_devis_facture_et_fournisseur_BDC",
+      "rule": "coherence_siret",
       "status": "passed",
-      "message": "Le SIRET 00672004914593 est identique dans le devis, la facture et le fournisseur du bon de commande."
+      "message": "Le SIRET est identique dans le devis, la facture et le fournisseur du bon de commande (00672004914593)."
     },
     {
-      "rule": "coherence_client_entre_devis_facture_et_fournisseur_BDC",
+      "rule": "coherence_client",
       "status": "failed",
-      "message": "Le client du bon de commande est \"Haïthem HENOUDA\" alors que celui du devis et de la facture est \"Haithem HENOUDA\" (différence d'orthographe)."
+      "message": "Le nom du client diffère entre le bon de commande (\"Haïthem HENOUDA\") et le devis/facture (\"Haithem HENOUDA\")."
     },
     {
-      "rule": "facture_sous_total_ht_plus_tva_montant_egal_total_ttc",
+      "rule": "facture_total_ttc_consistency",
       "status": "passed",
-      "message": "4862.92 + 972.58 = 5835.5, correspond au total_ttc indiqué."
+      "message": "Sous_total_ht + tva_montant = total_ttc (4862.92 + 972.58 = 5835.5) est respecté."
     },
     {
-      "rule": "facture_somme_lignes_egal_sous_total_ht",
+      "rule": "facture_lignes_sum",
       "status": "passed",
-      "message": "4481.10 + 381.82 = 4862.92, correspond au sous_total_ht indiqué."
+      "message": "La somme des totaux des lignes (4481.1 + 381.82 = 4862.92) correspond au sous_total_ht."
     },
     {
-      "rule": "facture_tva_montant_coherent_avec_tva_taux",
+      "rule": "facture_tva_consistency",
       "status": "passed",
-      "message": "4862.92 * 20% = 972.584, arrondi à 972.58, correspond au tva_montant indiqué."
+      "message": "Le montant de TVA (972.58) correspond à 20% du sous_total_ht (4862.92)."
     }
   ],
   "anomalies": [
     {
       "type": "client_mismatch",
-      "description": "Incohérence du nom du client entre le bon de commande (\"Haïthem HENOUDA\") et le devis/facture (\"Haithem HENOUDA\")."
+      "description": "Le client indiqué dans le bon de commande (\"Haïthem HENOUDA\") ne correspond pas à celui du devis et de la facture (\"Haithem HENOUDA\")."
     }
   ],
-  "confidence": 0.97
+  "confidence": 0.98
 }
