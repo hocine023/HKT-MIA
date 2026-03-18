@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_03_fake_total_devis",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_03_fake_total\\devis_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_03_fake_total\\clean\\devis.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_03_fake_total/devis_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_03_fake_total/clean/devis.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "devis",
   "document_type": "devis",

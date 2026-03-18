@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_02_siren_mismatch_devis",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_02_siren_mismatch\\devis_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_02_siren_mismatch\\clean\\devis.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_02_siren_mismatch/devis_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_02_siren_mismatch/clean/devis.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "devis",
   "document_type": "devis",
@@ -13,7 +13,7 @@
     "client": "Haithem HENOUDA",
     "total_ttc": 5448.24,
     "date": "16/03/2026",
-    "adresse": "38, boulevard Julie Briand, 27652 Delannoy",
+    "adresse": "38, boulevard J ulie Briand, 27652 Delannoy",
     "code_postal": "27652",
     "ville": "Delannoy",
     "dates_trouvees": [

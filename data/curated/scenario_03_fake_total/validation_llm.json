@@ -2,48 +2,52 @@
   "global_status": "a_verifier",
   "checks": [
     {
-      "rule": "presence_des_documents_attendus",
+      "rule": "presence_documents",
       "status": "passed",
-      "message": "Les documents bon_commande, devis et facture sont présents."
+      "message": "All expected documents (devis, bon_commande, facture) are present."
     },
     {
-      "rule": "presence_des_champs_minimums_utiles",
+      "rule": "presence_minimum_fields",
       "status": "passed",
-      "message": "Tous les documents contiennent les champs obligatoires (numero, siren, siret, client, sous_total_ht, tva_taux, tva_montant, lignes, total_ttc)."
+      "message": "All documents contain the required minimum fields."
     },
     {
-      "rule": "coherence_siren_entre_devis_facture_fournisseur_BDC",
+      "rule": "coherence_siren",
       "status": "passed",
-      "message": "Le SIREN (005780515) est identique dans le devis, la facture et le fournisseur du bon de commande."
+      "message": "SIREN is consistent across devis, facture and bon_commande fournisseur."
     },
     {
-      "rule": "coherence_siret_entre_devis_facture_fournisseur_BDC",
+      "rule": "coherence_siret",
       "status": "passed",
-      "message": "Le SIRET (00578051589734) est identique dans le devis, la facture et le fournisseur du bon de commande."
+      "message": "SIRET is consistent across devis, facture and bon_commande fournisseur."
     },
     {
-      "rule": "coherence_client_entre_devis_facture_fournisseur_BDC",
+      "rule": "coherence_client",
       "status": "passed",
-      "message": "Le client (Erwan MARCHAND) est identique dans le devis, la facture et le bon de commande."
+      "message": "Client name is consistent across all documents."
     },
     {
-      "rule": "facture_sous_total_ht_plus_tva_montant_egal_total_ttc",
+      "rule": "facture_total_ttc_consistency",
       "status": "failed",
-      "message": "Sous-total HT (20322.82) + TVA (4064.56) = 24387.38, alors que le total TTC indiqué est 24504.09. Incohérence détectée."
+      "message": "Sous_total_ht (20322.82) + TVA_montant (4064.56) = 24387.38, which does not match total_ttc (24504.09)."
     },
     {
-      "rule": "facture_somme_des_lignes_egale_sous_total_ht",
+      "rule": "facture_sum_lines_vs_sous_total_ht",
       "status": "passed",
-      "message": "La somme des totaux des lignes (20322.82) correspond au sous-total HT déclaré."
+      "message": "Sum of line totals equals sous_total_ht."
     },
     {
-      "rule": "facture_tva_montant_coherent_avec_tva_taux",
+      "rule": "facture_tva_consistency",
       "status": "passed",
-      "message": "TVA calculée (20322.82 * 20% = 4064.564) arrondie à 4064.56, cohérente avec le montant déclaré."
+      "message": "TVA_montant (4064.56) is consistent with TVA_taux (20%) applied to sous_total_ht."
     }
   ],
   "anomalies": [
-    "Incohérence entre le sous-total HT + TVA et le total TTC de la facture."
+    {
+      "type": "total_ttc_mismatch",
+      "document_id": "scenario_03_fake_total_facture",
+      "detail": "Calculated total (24387.38) differs from declared total_ttc (24504.09) by 116.71."
+    }
   ],
   "confidence": 0.98
 }

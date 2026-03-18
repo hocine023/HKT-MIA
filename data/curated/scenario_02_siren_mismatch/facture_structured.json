@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_02_siren_mismatch_facture",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_02_siren_mismatch\\facture_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_02_siren_mismatch\\clean\\facture.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_02_siren_mismatch/facture_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_02_siren_mismatch/clean/facture.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "facture",
   "document_type": "facture",
@@ -13,7 +13,7 @@
     "client": "Haithem HENOUDA",
     "total_ttc": 6472.76,
     "date": "01/03/2026",
-    "adresse": "38, boulevard Julie Briand, 27652 Delannoy",
+    "adresse": "38, boulevard J ulie Briand, 27652 Delannoy",
     "code_postal": "27652",
     "ville": "Delannoy",
     "dates_trouvees": [
@@ -22,13 +22,13 @@
     ],
     "lignes": [
       {
-        "description": "Expedite revolutionary e-business",
+        "description": "E xpedite revolutionary e-business",
         "quantite": 12,
         "prix_unitaire": 184.08,
         "total": 2208.96
       },
       {
-        "description": "Evolve next-generation web services",
+        "description": "E volve next-generation web services",
         "quantite": 9,
         "prix_unitaire": 353.89,
         "total": 3185.01

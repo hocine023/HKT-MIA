@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_03_fake_total_bon_commande",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_03_fake_total\\bon_commande_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_03_fake_total\\clean\\bon_commande.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_03_fake_total/bon_commande_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_03_fake_total/clean/bon_commande.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "bon_commande",
   "document_type": "bon_commande",
@@ -65,7 +65,7 @@
       "nom": "SCI MAUDUIT",
       "siren": "005780515",
       "siret": "00578051589734",
-      "adresse": "14, avenue Baron, 06103 Pires"
+      "adresse": "4, avenue Baron, 06103 Pires"
     }
   }
 }

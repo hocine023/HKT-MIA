@@ -1,7 +1,7 @@
 {
   "document_id": "scenario_01_normal_bon_commande",
-  "source_clean_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\clean\\scenario_01_normal\\bon_commande_ocr.json",
-  "source_raw_file": "C:\\Users\\Erwan\\Documents\\dev\\hackaton_ocr\\HKT-MIA\\data\\raw\\scenario_01_normal\\clean\\bon_commande.pdf",
+  "source_clean_file": "/opt/airflow/data/clean/scenario_01_normal/bon_commande_ocr.json",
+  "source_raw_file": "/opt/airflow/data/raw/scenario_01_normal/clean/bon_commande.pdf",
   "ocr_engine": "tesseract",
   "document_type_hint": "bon_commande",
   "document_type": "bon_commande",
@@ -10,7 +10,7 @@
     "emetteur": "DECOUPAGE ET MOULAGE D'ELASTOMERES",
     "siren": "006620124",
     "siret": "00662012403479",
-    "client": "Haithem HENOUDA",
+    "client": "Haïthem HENOUDA",
     "total_ttc": 10960.2,
     "date": "09/02/2026",
     "adresse": "56, boulevard de Vasseur, 87432 Saint Valentine",
@@ -34,8 +34,7 @@
     "fournisseur": {
       "nom": "BORFLEX SERVICES",
       "siren": "006720049",
-      "siret": "00672004914593",
-      "adresse": "chemin de Moulin, 28242 Saint Jeannenec"
+      "siret": "00672004914593"
     }
   }
 }
