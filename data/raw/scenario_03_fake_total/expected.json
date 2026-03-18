@@ -1,0 +1,46 @@
+{
+  "scenario": "fake_total",
+  "expected_status": "non_conforme",
+  "expected_anomalies": [
+    "Montant TTC incohérent avec HT + TVA"
+  ],
+  "documents": {
+    "devis": {
+      "clean_file": "clean/devis.pdf",
+      "noisy_file": "noisy/devis_scan.png",
+      "numero": "DEV-26883",
+      "emetteur_nom": "SCI MAUDUIT",
+      "siren": "005780515",
+      "siret": "00578051589734",
+      "total_ttc": 3153.62,
+      "date": "08/03/2026",
+      "falsifications": []
+    },
+    "bon_commande": {
+      "clean_file": "clean/bon_commande.pdf",
+      "noisy_file": "noisy/bon_commande_scan.png",
+      "numero": "BDC-56692",
+      "fournisseur_nom": "SCI MAUDUIT",
+      "siren": "005780515",
+      "siret": "00578051589734",
+      "total_ttc": 103590.46,
+      "date": "04/03/2026",
+      "falsifications": []
+    },
+    "facture": {
+      "clean_file": "clean/facture.pdf",
+      "noisy_file": "noisy/facture_scan.png",
+      "numero": "FAC-50687",
+      "emetteur_nom": "SCI MAUDUIT",
+      "siren": "005780515",
+      "siret": "00578051589734",
+      "sous_total": 20322.82,
+      "tva": 4064.56,
+      "total_ttc": 24504.09,
+      "date": "21/02/2026",
+      "falsifications": [
+        "Montant TTC falsifié : HT + TVA ne correspond pas au TTC"
+      ]
+    }
+  }
+}

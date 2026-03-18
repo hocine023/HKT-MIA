@@ -1,0 +1,8 @@
+{
+  "document_id": "scenario_02_siren_mismatch_facture",
+  "source_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_02_siren_mismatch\\clean\\facture.pdf",
+  "ocr_engine": "tesseract",
+  "document_type_hint": "facture",
+  "ocr_text_raw": "SNC BARRE SIREN: 005620158 | SIRET: 00562015847053 38, boulevard Julie Briand, 27652 Delannoy Tel: 0546578713 | christophemaillot@pruvost.net FACTURE N° Facture: FAC-86503 Date: 01/03/2026 Date d'échéance: 30/04/2026 Facturer à : Haithem HENOUDA 508, rue de Lucas, 33218 Saint Richard-la-Forêt michellele-goff@example.org Description Qte Prix unit. (EUR) Total (EUR) Expedite revolutionary e-business 12 184.08 2208.96 Evolve next-generation web services 9 353.89 3185.01 Sous-total HT: _ 5393.97 EUR TVA (20%): 1078.79 EUR Total TTC: 6472.76 EUR Conditions de paiement : virement bancaire sous 30 jours. En cas de retard, une pénalité de 3x le taux d'intérêt légal sera appliquée. Pas d'escompte en cas de paiement anticipé. Page 1",
+  "ocr_text_normalized": "SNC BARRE SIREN: 005620158 | SIRET: 00562015847053 38, boulevard Julie Briand, 27652 Delannoy Tel: 0546578713 | christophemaillot@pruvost.net FACTURE N° Facture: FAC-86503 Date: 01/03/2026 Date d'échéance: 30/04/2026 Facturer à : Haithem HENOUDA 508, rue de Lucas, 33218 Saint Richard-la-Forêt michellele-goff@example.org Description Qte Prix unit. (EUR) Total (EUR) Expedite revolutionary e-business 12 184.08 2208.96 Evolve next-generation web services 9 353.89 3185.01 Sous-total HT: _ 5393.97 EUR TVA (20%): 1078.79 EUR Total TTC: 6472.76 EUR Conditions de paiement : virement bancaire sous 30 jours. En cas de retard, une pénalité de 3x le taux d'intérêt légal sera appliquée. Pas d'escompte en cas de paiement anticipé. Page 1"
+}

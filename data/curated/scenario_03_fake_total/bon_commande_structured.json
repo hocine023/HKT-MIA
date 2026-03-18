@@ -1,0 +1,65 @@
+{
+  "document_id": "scenario_03_fake_total_bon_commande",
+  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_03_fake_total\\bon_commande_ocr.json",
+  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_03_fake_total\\clean\\bon_commande.pdf",
+  "ocr_engine": "tesseract",
+  "document_type_hint": "bon_commande",
+  "document_type": "bon_commande",
+  "extracted_fields": {
+    "numero": "BDC-56692",
+    "emetteur": "SOCIETE DES PRODUITS EN BETON ET MATERIAUX DE CONSTR",
+    "siren": "006580161",
+    "siret": "00658016111916",
+    "client": "Erwan MARCHAND",
+    "total_ttc": 103590.46,
+    "date": "04/03/2026",
+    "adresse": "250, rue Inès Aubry, 05211 Gay-sur-Barre",
+    "code_postal": "05211",
+    "ville": "Gay-Sur-Barre",
+    "dates_trouvees": [
+      "04/03/2026",
+      "18/03/2026"
+    ],
+    "lignes": [
+      {
+        "description": "Formation professionnelle",
+        "quantite": 26,
+        "prix_unitaire": 1062.2,
+        "total": 27617.2
+      },
+      {
+        "description": "Cables reseau Cat6",
+        "quantite": 30,
+        "prix_unitaire": 175.73,
+        "total": 5271.9
+      },
+      {
+        "description": "Papier A4 (ramette x5)",
+        "quantite": 16,
+        "prix_unitaire": 895.26,
+        "total": 14324.16
+      },
+      {
+        "description": "Maintenance serveur",
+        "quantite": 17,
+        "prix_unitaire": 897.68,
+        "total": 15260.56
+      },
+      {
+        "description": "Prestation de conseil",
+        "quantite": 38,
+        "prix_unitaire": 482.28,
+        "total": 18326.64
+      },
+      {
+        "description": "Licences logicielles",
+        "quantite": 9,
+        "prix_unitaire": 613.88,
+        "total": 5524.92
+      }
+    ],
+    "sous_total_ht": 86325.38,
+    "tva_taux": 20,
+    "tva_montant": 17265.08
+  }
+}

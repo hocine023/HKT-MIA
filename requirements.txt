@@ -1,0 +1,9 @@
+faker
+fpdf2
+pillow
+numpy
+opencv-python
+pytesseract
+pdf2image
+python-dotenv
+requests

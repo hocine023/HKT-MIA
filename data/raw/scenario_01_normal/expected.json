@@ -1,0 +1,42 @@
+{
+  "scenario": "normal",
+  "expected_status": "conforme",
+  "expected_anomalies": [],
+  "documents": {
+    "devis": {
+      "clean_file": "clean/devis.pdf",
+      "noisy_file": "noisy/devis_scan.png",
+      "numero": "DEV-29105",
+      "emetteur_nom": "BORFLEX SERVICES",
+      "siren": "006720049",
+      "siret": "00672004914593",
+      "total_ttc": 1933.22,
+      "date": "16/03/2026",
+      "falsifications": []
+    },
+    "bon_commande": {
+      "clean_file": "clean/bon_commande.pdf",
+      "noisy_file": "noisy/bon_commande_scan.png",
+      "numero": "BDC-57502",
+      "fournisseur_nom": "BORFLEX SERVICES",
+      "siren": "006720049",
+      "siret": "00672004914593",
+      "total_ttc": 10960.2,
+      "date": "09/02/2026",
+      "falsifications": []
+    },
+    "facture": {
+      "clean_file": "clean/facture.pdf",
+      "noisy_file": "noisy/facture_scan.png",
+      "numero": "FAC-25014",
+      "emetteur_nom": "BORFLEX SERVICES",
+      "siren": "006720049",
+      "siret": "00672004914593",
+      "sous_total": 4862.92,
+      "tva": 972.58,
+      "total_ttc": 5835.5,
+      "date": "19/02/2026",
+      "falsifications": []
+    }
+  }
+}

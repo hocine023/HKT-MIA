@@ -1,0 +1,56 @@
+{
+  "global_status": "non_conforme",
+  "checks": [
+    {
+      "rule": "presence_documents_expected",
+      "status": "passed",
+      "message": "Les documents bon_commande, devis et facture sont présents."
+    },
+    {
+      "rule": "presence_minimum_fields",
+      "status": "passed",
+      "message": "Tous les champs obligatoires sont présents dans chaque document."
+    },
+    {
+      "rule": "coherence_siren_devis_facture",
+      "status": "failed",
+      "message": "Le SIREN du devis (176667861) ne correspond pas à celui de la facture (005620158)."
+    },
+    {
+      "rule": "coherence_siret_devis_facture",
+      "status": "failed",
+      "message": "Le SIRET du devis (17666786179841) ne correspond pas à celui de la facture (00562015847053)."
+    },
+    {
+      "rule": "coherence_client_devis_facture",
+      "status": "passed",
+      "message": "Le client est identique dans le devis et la facture (Haithem HENOUDA)."
+    },
+    {
+      "rule": "facture_total_ttc_consistency",
+      "status": "passed",
+      "message": "Sous_total_ht (5393.97) + TVA montant (1078.79) = Total TTC (6472.76)."
+    },
+    {
+      "rule": "facture_lignes_sum_consistency",
+      "status": "passed",
+      "message": "La somme des lignes (2208.96 + 3185.01 = 5393.97) correspond au sous_total_ht."
+    },
+    {
+      "rule": "facture_tva_consistency",
+      "status": "passed",
+      "message": "Le montant de TVA (1078.79) correspond à 20% du sous_total_ht (5393.97)."
+    }
+  ],
+  "anomalies": [
+    {
+      "type": "siren_mismatch",
+      "details": "Devis SIREN: 176667861, Facture SIREN: 005620158"
+    },
+    {
+      "type": "siret_mismatch",
+      "details": "Devis SIRET: 17666786179841, Facture SIRET: 00562015847053"
+    }
+  ],
+  "confidence": 1.0
+}

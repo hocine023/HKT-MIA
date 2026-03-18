@@ -1,0 +1,47 @@
+{
+  "document_id": "scenario_02_siren_mismatch_bon_commande",
+  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_02_siren_mismatch\\bon_commande_ocr.json",
+  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_02_siren_mismatch\\clean\\bon_commande.pdf",
+  "ocr_engine": "tesseract",
+  "document_type_hint": "bon_commande",
+  "document_type": "bon_commande",
+  "extracted_fields": {
+    "numero": "BDC-44593",
+    "emetteur": "SGN PARIS INVESTISSEMENTS",
+    "siren": "005580501",
+    "siret": "00558050113239",
+    "client": "Haithem HENOUDA",
+    "total_ttc": 34918.44,
+    "date": "22/02/2026",
+    "adresse": "47, avenue Dias, 13151 GarciaBourg",
+    "code_postal": "13151",
+    "ville": "Garciabourg",
+    "dates_trouvees": [
+      "22/02/2026",
+      "08/04/2026"
+    ],
+    "lignes": [
+      {
+        "description": "Hebergement cloud",
+        "quantite": 13,
+        "prix_unitaire": 846.96,
+        "total": 11010.48
+      },
+      {
+        "description": "Fournitures de bureau",
+        "quantite": 43,
+        "prix_unitaire": 277.34,
+        "total": 11925.62
+      },
+      {
+        "description": "Materiel informatique",
+        "quantite": 6,
+        "prix_unitaire": 1027.1,
+        "total": 6162.6
+      }
+    ],
+    "sous_total_ht": 29098.7,
+    "tva_taux": 20,
+    "tva_montant": 5819.74
+  }
+}

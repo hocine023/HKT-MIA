@@ -1,0 +1,57 @@
+{
+  "global_status": "conforme",
+  "checks": [
+    {
+      "rule": "presence_of_documents_expected",
+      "status": "passed",
+      "message": "Les documents bon_commande, devis et facture sont présents."
+    },
+    {
+      "rule": "presence_of_minimum_fields_bon_commande",
+      "status": "passed",
+      "message": "Tous les champs obligatoires du bon de commande sont présents."
+    },
+    {
+      "rule": "presence_of_minimum_fields_devis",
+      "status": "passed",
+      "message": "Tous les champs obligatoires du devis sont présents."
+    },
+    {
+      "rule": "presence_of_minimum_fields_facture",
+      "status": "passed",
+      "message": "Tous les champs obligatoires de la facture sont présents."
+    },
+    {
+      "rule": "coherence_siren_devis_facture",
+      "status": "passed",
+      "message": "Le SIREN du devis (006720049) correspond à celui de la facture."
+    },
+    {
+      "rule": "coherence_siret_devis_facture",
+      "status": "passed",
+      "message": "Le SIRET du devis (00672004914593) correspond à celui de la facture."
+    },
+    {
+      "rule": "coherence_client_devis_facture",
+      "status": "passed",
+      "message": "Le client du devis (Haithem HENOUDA) correspond à celui de la facture."
+    },
+    {
+      "rule": "facture_total_ttc_consistency",
+      "status": "passed",
+      "message": "Sous_total_ht + tva_montant = total_ttc (4862.92 + 972.58 = 5835.5)."
+    },
+    {
+      "rule": "facture_lignes_sum_consistency",
+      "status": "passed",
+      "message": "La somme des totaux des lignes (4481.1 + 381.82 = 4862.92) correspond au sous_total_ht."
+    },
+    {
+      "rule": "facture_tva_consistency",
+      "status": "passed",
+      "message": "Le montant de TVA (972.58) correspond à 20% du sous_total_ht (4862.92 * 0.20 = 972.584, arrondi à 2 décimales)."
+    }
+  ],
+  "anomalies": [],
+  "confidence": 1.0
+}

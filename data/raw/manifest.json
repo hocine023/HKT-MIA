@@ -1,0 +1,30 @@
+[
+  {
+    "folder": "scenario_01_normal",
+    "scenario": "normal",
+    "expected_status": "conforme",
+    "expected_anomalies": [],
+    "clean_documents_count": 3,
+    "noisy_documents_count": 3
+  },
+  {
+    "folder": "scenario_02_siren_mismatch",
+    "scenario": "siren_mismatch",
+    "expected_status": "non_conforme",
+    "expected_anomalies": [
+      "SIREN incohérent entre devis, bon_commande et facture"
+    ],
+    "clean_documents_count": 3,
+    "noisy_documents_count": 3
+  },
+  {
+    "folder": "scenario_03_fake_total",
+    "scenario": "fake_total",
+    "expected_status": "non_conforme",
+    "expected_anomalies": [
+      "Montant TTC incohérent avec HT + TVA"
+    ],
+    "clean_documents_count": 3,
+    "noisy_documents_count": 3
+  }
+]

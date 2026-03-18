@@ -1,0 +1,53 @@
+{
+  "global_status": "a_verifier",
+  "checks": [
+    {
+      "rule": "presence_documents",
+      "status": "passed",
+      "message": "Les documents bon_commande, devis et facture sont tous présents."
+    },
+    {
+      "rule": "presence_minimum_fields",
+      "status": "passed",
+      "message": "Tous les documents contiennent les champs obligatoires (numero, siren, siret, client, sous_total_ht, tva_taux, tva_montant, total_ttc, lignes)."
+    },
+    {
+      "rule": "siren_coherence",
+      "status": "passed",
+      "message": "Le siren du devis (005780515) correspond à celui de la facture (005780515)."
+    },
+    {
+      "rule": "siret_coherence",
+      "status": "passed",
+      "message": "Le siret du devis (00578051589734) correspond à celui de la facture (00578051589734)."
+    },
+    {
+      "rule": "client_coherence",
+      "status": "passed",
+      "message": "Le client du devis (Erwan MARCHAND) correspond à celui de la facture (Erwan MARCHAND)."
+    },
+    {
+      "rule": "facture_total_ttc_consistency",
+      "status": "failed",
+      "message": "Sous_total_ht (20322.82) + tva_montant (4064.56) = 24387.38, qui ne correspond pas au total_ttc indiqué (24504.09)."
+    },
+    {
+      "rule": "facture_lignes_sum",
+      "status": "passed",
+      "message": "La somme des lignes (20322.82) correspond au sous_total_ht déclaré."
+    },
+    {
+      "rule": "facture_tva_consistency",
+      "status": "passed",
+      "message": "Le tva_montant (4064.56) correspond à 20% du sous_total_ht (20322.82) arrondi à deux décimales."
+    }
+  ],
+  "anomalies": [
+    {
+      "type": "total_ttc_mismatch",
+      "document_id": "scenario_03_fake_total_facture",
+      "detail": "Le total TTC déclaré (24504.09) ne correspond pas à la somme du sous-total HT et de la TVA (24387.38)."
+    }
+  ],
+  "confidence": 0.98
+}

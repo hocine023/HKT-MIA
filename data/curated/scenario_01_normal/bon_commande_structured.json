@@ -1,0 +1,35 @@
+{
+  "document_id": "scenario_01_normal_bon_commande",
+  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_01_normal\\bon_commande_ocr.json",
+  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_01_normal\\clean\\bon_commande.pdf",
+  "ocr_engine": "tesseract",
+  "document_type_hint": "bon_commande",
+  "document_type": "bon_commande",
+  "extracted_fields": {
+    "numero": "BDC-57502",
+    "emetteur": "DECOUPAGE ET MOULAGE D'ELASTOMERES",
+    "siren": "006620124",
+    "siret": "00662012403479",
+    "client": "Haithem HENOUDA",
+    "total_ttc": 10960.2,
+    "date": "09/02/2026",
+    "adresse": "56, boulevard de Vasseur, 87432 Saint Valentine",
+    "code_postal": "87432",
+    "ville": "Saint Valentine",
+    "dates_trouvees": [
+      "09/02/2026",
+      "16/02/2026"
+    ],
+    "lignes": [
+      {
+        "description": "Licences logicielles",
+        "quantite": 15,
+        "prix_unitaire": 608.9,
+        "total": 9133.5
+      }
+    ],
+    "sous_total_ht": 9133.5,
+    "tva_taux": 20,
+    "tva_montant": 1826.7
+  }
+}

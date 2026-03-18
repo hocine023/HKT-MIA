@@ -1,0 +1,35 @@
+{
+  "document_id": "scenario_02_siren_mismatch_devis",
+  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_02_siren_mismatch\\devis_ocr.json",
+  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_02_siren_mismatch\\clean\\devis.pdf",
+  "ocr_engine": "tesseract",
+  "document_type_hint": "devis",
+  "document_type": "devis",
+  "extracted_fields": {
+    "numero": "DEV-21929",
+    "emetteur": "SNC BARRE",
+    "siren": "176667861",
+    "siret": "17666786179841",
+    "client": "Haithem HENOUDA",
+    "total_ttc": 5448.24,
+    "date": "16/03/2026",
+    "adresse": "38, boulevard Julie Briand, 27652 Delannoy",
+    "code_postal": "27652",
+    "ville": "Delannoy",
+    "dates_trouvees": [
+      "16/03/2026",
+      "30/04/2026"
+    ],
+    "lignes": [
+      {
+        "description": "Enhance clicks-and-mortar partnerships",
+        "quantite": 12,
+        "prix_unitaire": 378.35,
+        "total": 4540.2
+      }
+    ],
+    "sous_total_ht": 4540.2,
+    "tva_taux": 20,
+    "tva_montant": 908.04
+  }
+}

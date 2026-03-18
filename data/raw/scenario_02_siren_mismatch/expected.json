@@ -1,0 +1,46 @@
+{
+  "scenario": "siren_mismatch",
+  "expected_status": "non_conforme",
+  "expected_anomalies": [
+    "SIREN incohérent entre devis, bon_commande et facture"
+  ],
+  "documents": {
+    "devis": {
+      "clean_file": "clean/devis.pdf",
+      "noisy_file": "noisy/devis_scan.png",
+      "numero": "DEV-21929",
+      "emetteur_nom": "SNC BARRE",
+      "siren": "176667861",
+      "siret": "17666786179841",
+      "total_ttc": 5448.24,
+      "date": "16/03/2026",
+      "falsifications": [
+        "SIREN/SIRET du devis incohérent avec les autres documents"
+      ]
+    },
+    "bon_commande": {
+      "clean_file": "clean/bon_commande.pdf",
+      "noisy_file": "noisy/bon_commande_scan.png",
+      "numero": "BDC-44593",
+      "fournisseur_nom": "SNC BARRE",
+      "siren": "005620158",
+      "siret": "00562015847053",
+      "total_ttc": 34918.44,
+      "date": "22/02/2026",
+      "falsifications": []
+    },
+    "facture": {
+      "clean_file": "clean/facture.pdf",
+      "noisy_file": "noisy/facture_scan.png",
+      "numero": "FAC-86503",
+      "emetteur_nom": "SNC BARRE",
+      "siren": "005620158",
+      "siret": "00562015847053",
+      "sous_total": 5393.97,
+      "tva": 1078.79,
+      "total_ttc": 6472.76,
+      "date": "01/03/2026",
+      "falsifications": []
+    }
+  }
+}

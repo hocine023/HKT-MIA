@@ -1,0 +1,65 @@
+{
+  "document_id": "scenario_03_fake_total_facture",
+  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_03_fake_total\\facture_ocr.json",
+  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_03_fake_total\\clean\\facture.pdf",
+  "ocr_engine": "tesseract",
+  "document_type_hint": "facture",
+  "document_type": "facture",
+  "extracted_fields": {
+    "numero": "FAC-50687",
+    "emetteur": "SCI MAUDUIT",
+    "siren": "005780515",
+    "siret": "00578051589734",
+    "client": "Erwan MARCHAND",
+    "total_ttc": 24504.09,
+    "date": "21/02/2026",
+    "adresse": "14, avenue Baron, 06103 Pires",
+    "code_postal": "06103",
+    "ville": "Pires",
+    "dates_trouvees": [
+      "21/02/2026",
+      "07/04/2026"
+    ],
+    "lignes": [
+      {
+        "description": "Generate world-class bandwidth",
+        "quantite": 14,
+        "prix_unitaire": 302.24,
+        "total": 4231.36
+      },
+      {
+        "description": "Grow visionary methodologies",
+        "quantite": 13,
+        "prix_unitaire": 196.99,
+        "total": 2560.87
+      },
+      {
+        "description": "Architect collaborative communities",
+        "quantite": 15,
+        "prix_unitaire": 269.27,
+        "total": 4039.05
+      },
+      {
+        "description": "Repurpose strategic technologies",
+        "quantite": 18,
+        "prix_unitaire": 431.78,
+        "total": 7772.04
+      },
+      {
+        "description": "Deliver open-source infrastructures",
+        "quantite": 1,
+        "prix_unitaire": 343.34,
+        "total": 343.34
+      },
+      {
+        "description": "Transition web-enabled methodologies",
+        "quantite": 4,
+        "prix_unitaire": 344.04,
+        "total": 1376.16
+      }
+    ],
+    "sous_total_ht": 20322.82,
+    "tva_taux": 20,
+    "tva_montant": 4064.56
+  }
+}

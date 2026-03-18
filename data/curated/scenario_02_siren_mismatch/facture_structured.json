@@ -1,0 +1,41 @@
+{
+  "document_id": "scenario_02_siren_mismatch_facture",
+  "source_clean_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\clean\\scenario_02_siren_mismatch\\facture_ocr.json",
+  "source_raw_file": "C:\\Users\\aklih\\ipssi\\test\\v2\\data\\raw\\scenario_02_siren_mismatch\\clean\\facture.pdf",
+  "ocr_engine": "tesseract",
+  "document_type_hint": "facture",
+  "document_type": "facture",
+  "extracted_fields": {
+    "numero": "FAC-86503",
+    "emetteur": "SNC BARRE",
+    "siren": "005620158",
+    "siret": "00562015847053",
+    "client": "Haithem HENOUDA",
+    "total_ttc": 6472.76,
+    "date": "01/03/2026",
+    "adresse": "38, boulevard Julie Briand, 27652 Delannoy",
+    "code_postal": "27652",
+    "ville": "Delannoy",
+    "dates_trouvees": [
+      "01/03/2026",
+      "30/04/2026"
+    ],
+    "lignes": [
+      {
+        "description": "Expedite revolutionary e-business",
+        "quantite": 12,
+        "prix_unitaire": 184.08,
+        "total": 2208.96
+      },
+      {
+        "description": "Evolve next-generation web services",
+        "quantite": 9,
+        "prix_unitaire": 353.89,
+        "total": 3185.01
+      }
+    ],
+    "sous_total_ht": 5393.97,
+    "tva_taux": 20,
+    "tva_montant": 1078.79
+  }
+}
