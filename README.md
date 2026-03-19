@@ -76,7 +76,7 @@ Résultats affichés dans le Front
 #### Front-end
 Le front permet :
 - l’upload des documents
-- l’affichage des documents extraits dans un CRM simulé
+- l’affichage des documents extraits dans un CRM 
 - l’affichage du résultat de validation dans une interface conformité
 
 #### Back-end
@@ -218,71 +218,6 @@ sous forme de JSON structurés, puis il produit :
 - une liste d’anomalies
 - un niveau de confiance
 
-### Règles de validation vérifiées
-Le modèle vérifie notamment :
-- la présence des documents attendus
-- la présence des champs minimums
-- la cohérence du `siren`
-- la cohérence du `siret`
-- la cohérence du `client`
-- la cohérence comptable de la facture :
-  - `sous_total_ht + tva_montant = total_ttc`
-  - somme des lignes = `sous_total_ht`
-
-### Pourquoi utiliser un LLM ici ?
-Le LLM est utilisé comme moteur de validation intelligente pour :
-- interpréter les données documentaires
-- produire un verdict métier structuré
-- expliquer les incohérences de manière exploitable
-
----
-
-## Structure du projet
-
-```text
-HKT-MIA/
-│
-├── backend/
-│   ├── Dockerfile
-│   ├── main.py
-│   └── requirements.txt
-│
-├── dags/
-│   └── hkt_mia_pipeline_dag.py
-│
-├── frontend/
-│   ├── src/
-│   │   ├── api.ts
-│   │   ├── App.tsx
-│   │   ├── store.ts
-│   │   ├── types.ts
-│   │   └── pages/
-│   │       ├── UploadPage.tsx
-│   │       ├── CRMPage.tsx
-│   │       └── CompliancePage.tsx
-│
-├── scripts/
-│   ├── ingest_raw.py
-│   ├── build_clean.py
-│   ├── build_curated.py
-│   └── validate_bundle_llm.py
-│
-├── services/
-│   ├── mongo.py
-│   ├── ocr.py
-│   └── llm_validator.py
-│
-├── data/
-│   ├── raw/
-│   ├── clean/
-│   └── curated/
-│
-├── docker-compose.yml
-├── requirements.txt
-└── README.md
-```
-
----
 
 ## Lancement du projet
 
@@ -331,46 +266,6 @@ Une fois les conteneurs lancés :
 
 ---
 
-## Exemple de résultats attendus
-
-### CRM
-L’interface CRM affiche par document :
-- type de document
-- société / fournisseur
-- SIREN / SIRET
-- client
-- date
-- montant HT
-- montant TTC
-
-### Conformité
-L’interface conformité affiche :
-- le statut global :
-  - conforme
-  - à vérifier
-  - non conforme
-- les contrôles effectués
-- les anomalies détectées
-
----
-
-## Orchestration Airflow
-
-Le DAG principal est :
-
-```text
-hkt_mia_pipeline
-```
-
-Il exécute les tâches suivantes :
-- `ingest_raw`
-- `build_clean`
-- `build_curated`
-- `validate_bundle_llm`
-
-Chaque exécution est liée à un `batch_id`.
-
----
 
 ## Stockage MongoDB
 
@@ -390,47 +285,6 @@ Ils restent sur le système de fichiers dans `data/raw`, tandis que MongoDB cons
 
 ---
 
-## Choix techniques
-
-### Pourquoi FastAPI ?
-Pour exposer simplement une API REST légère entre le front et Airflow.
-
-### Pourquoi Airflow ?
-Pour orchestrer les différentes étapes du pipeline documentaire.
-
-### Pourquoi MongoDB ?
-Pour stocker les résultats semi-structurés liés aux documents.
-
-### Pourquoi React ?
-Pour simuler deux applications métiers modernes :
-- CRM
-- conformité
-
-### Pourquoi un LLM ?
-Pour automatiser la validation documentaire et produire un verdict métier structuré.
-
----
-
-## Limites actuelles
-
-Le projet est une version hackathon / démonstrateur :
-- pas de gestion poussée des droits utilisateurs
-- pas de persistance cloud complète
-- pas d’entraînement de modèle custom
-- pipeline principalement orienté démonstration métier
-
----
-
-## Perspectives d’évolution
-
-- déploiement cloud complet
-- persistance du store front
-- gestion multi-clients plus avancée
-- dashboard métier enrichi
-- extension à d’autres types de documents
-- amélioration de l’OCR sur les scans bruités
-
----
 
 ## Auteur / Projet
 
