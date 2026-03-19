@@ -267,24 +267,6 @@ Une fois les conteneurs lancés :
 ---
 
 
-## Stockage MongoDB
-
-Les collections principales utilisées sont :
-
-- `raw_zone`
-- `clean_zone`
-- `curated_zone`
-
-### Remarque
-Les fichiers bruts ne sont pas stockés en base64 dans MongoDB.  
-Ils restent sur le système de fichiers dans `data/raw`, tandis que MongoDB conserve uniquement :
-- les métadonnées
-- les résultats OCR
-- les données structurées
-- les résultats de validation
-
----
-
 
 ## Auteur / Projet
 
