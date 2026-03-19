@@ -1,38 +1,25 @@
-"""
-HKT-MIA Backend — FastAPI
-Pipeline : Upload fichiers → OCR (Tesseract) → Extraction regex → Validation LLM (HuggingFace)
-"""
-
+import os
 import uuid
 import json
-import tempfile
-import os
-import logging
+import shutil
 from pathlib import Path
-from typing import Optional
+from typing import List
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
+import requests
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
-from services.ocr import (
-    run_ocr,
-    normalize_text,
-    extract_fields,
-    detect_document_type,
-    DocumentTypeNotSupportedError,
-)
-from services.llm_validator import validate_bundle_with_llm
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+RAW_DIR = DATA_DIR / "raw"
+CURATED_DIR = DATA_DIR / "curated"
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+AIRFLOW_BASE_URL = os.getenv("AIRFLOW_BASE_URL", "http://airflow-webserver:8080")
+AIRFLOW_USERNAME = os.getenv("AIRFLOW_USERNAME", "admin")
+AIRFLOW_PASSWORD = os.getenv("AIRFLOW_PASSWORD", "admin")
+AIRFLOW_DAG_ID = os.getenv("AIRFLOW_DAG_ID", "hkt_mia_pipeline")
 
-# ── App ───────────────────────────────────────────────────────────────────────
-app = FastAPI(
-    title="HKT-MIA API",
-    description="Pipeline OCR → Extraction → Validation LLM de documents comptables",
-    version="1.0.0",
-)
+app = FastAPI(title="HKT-MIA Backend", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,269 +29,149 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Stockage en mémoire ────────────────────────────────────────────────────────
-batches: dict[str, dict] = {}
+ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg"}
 
 
-# ── Modèles de réponse (miroir des types TypeScript du front) ─────────────────
-class ExtractedFields(BaseModel):
-    numero: Optional[str] = None
-    emetteur: Optional[str] = None
-    siren: Optional[str] = None
-    siret: Optional[str] = None
-    client: Optional[str] = None
-    total_ttc: Optional[float] = None
-    date: Optional[str] = None
-    adresse: Optional[str] = None
-    code_postal: Optional[str] = None
-    ville: Optional[str] = None
-    dates_trouvees: Optional[list[str]] = None
-    lignes: Optional[list[dict]] = None
-    sous_total_ht: Optional[float] = None
-    tva_taux: Optional[int] = None
-    tva_montant: Optional[float] = None
-    fournisseur: Optional[dict] = None
+def ensure_dirs():
+    (DATA_DIR / "raw").mkdir(parents=True, exist_ok=True)
+    (DATA_DIR / "clean").mkdir(parents=True, exist_ok=True)
+    (DATA_DIR / "curated").mkdir(parents=True, exist_ok=True)
 
 
-class DocumentData(BaseModel):
-    document_id: str
-    filename: str
-    document_type: str
-    ocr_text: Optional[str] = None
-    extracted_fields: ExtractedFields
+def save_uploaded_files(batch_id: str, files: List[UploadFile]) -> Path:
+    batch_raw_clean_dir = RAW_DIR / batch_id / "clean"
+    batch_raw_clean_dir.mkdir(parents=True, exist_ok=True)
+
+    for upload in files:
+        filename = upload.filename or "document"
+        ext = Path(filename).suffix.lower()
+
+        if ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(
+                status_code=415,
+                detail=f"Format non supporté pour {filename}: {ext}"
+            )
+
+        out_path = batch_raw_clean_dir / filename
+        with open(out_path, "wb") as f:
+            shutil.copyfileobj(upload.file, f)
+
+    return batch_raw_clean_dir
 
 
-class LLMCheck(BaseModel):
-    rule: str
-    status: str   # "passed" | "failed" | "not_applicable"
-    message: str
+def trigger_airflow_dag(batch_id: str) -> dict:
+    url = f"{AIRFLOW_BASE_URL}/api/v1/dags/{AIRFLOW_DAG_ID}/dagRuns"
+    payload = {"conf": {"batch_id": batch_id}}
 
-
-class ValidationResult(BaseModel):
-    status: str   # "conforme" | "a_verifier" | "non_conforme"
-    anomalies: list[str]
-    checks: Optional[list[LLMCheck]] = None
-    confidence: Optional[float] = None
-
-
-class ProcessingResult(BaseModel):
-    batch_id: str
-    documents: list[DocumentData]
-    validation: ValidationResult
-
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".webp"}
-
-
-def _save_temp_file(content: bytes, filename: str) -> str:
-    """Sauvegarde les bytes dans un fichier temporaire et retourne son chemin."""
-    ext = Path(filename).suffix.lower()
-    with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
-        tmp.write(content)
-        return tmp.name
-
-
-def _process_one_file(content: bytes, filename: str) -> DocumentData:
-    """OCR + extraction pour un fichier. Retourne un DocumentData."""
-    ext = Path(filename).suffix.lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        raise HTTPException(
-            status_code=415,
-            detail=f"Format non supporté : {ext}. Acceptés : {', '.join(ALLOWED_EXTENSIONS)}",
-        )
-
-    tmp_path = _save_temp_file(content, filename)
-    try:
-        # 1. OCR
-        raw_text = run_ocr(tmp_path)
-        clean_text = normalize_text(raw_text)
-
-        # 2. Extraction des champs
-        try:
-            fields_dict = extract_fields(clean_text, include_empty=True)
-        except DocumentTypeNotSupportedError:
-            doc_type = detect_document_type(clean_text) or "document_inconnu"
-            fields_dict = {"document_type": doc_type}
-
-        doc_type = fields_dict.pop("document_type", "document_inconnu")
-        # Retirer raw_text du dict extrait (on le stocke séparément)
-        fields_dict.pop("raw_text", None)
-
-        return DocumentData(
-            document_id=f"doc_{uuid.uuid4().hex[:6]}",
-            filename=filename,
-            document_type=doc_type,
-            ocr_text=clean_text,
-            extracted_fields=ExtractedFields(**{
-                k: fields_dict.get(k) for k in ExtractedFields.model_fields
-            }),
-        )
-    finally:
-        os.unlink(tmp_path)
-
-
-def _build_llm_bundle(batch_id: str, documents: list[DocumentData]) -> dict:
-    """Construit le bundle attendu par validate_bundle_with_llm."""
-    return {
-        "scenario_id": batch_id,
-        "documents": [
-            {
-                "document_id": doc.document_id,
-                "document_type": doc.document_type,
-                "fields": doc.extracted_fields.model_dump(exclude_none=True),
-            }
-            for doc in documents
-        ],
-    }
-
-
-def _llm_result_to_validation(llm_result: dict) -> ValidationResult:
-    """Convertit la réponse LLM en ValidationResult."""
-    raw_status = llm_result.get("global_status", "a_verifier")
-    # Normaliser : le LLM peut retourner "a_verifier" ou "à_vérifier"
-    status_map = {
-        "conforme": "conforme",
-        "a_verifier": "à vérifier",
-        "à_vérifier": "à vérifier",
-        "non_conforme": "non_conforme",
-    }
-    status = status_map.get(raw_status, "à vérifier")
-
-    checks = [
-        LLMCheck(
-            rule=c.get("rule", ""),
-            status=c.get("status", "not_applicable"),
-            message=c.get("message", ""),
-        )
-        for c in llm_result.get("checks", [])
-    ]
-
-    return ValidationResult(
-        status=status,
-        anomalies=llm_result.get("anomalies", []),
-        checks=checks,
-        confidence=llm_result.get("confidence"),
+    response = requests.post(
+        url,
+        auth=(AIRFLOW_USERNAME, AIRFLOW_PASSWORD),
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(payload),
+        timeout=30,
     )
 
+    if response.status_code >= 300:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Erreur Airflow: {response.status_code} {response.text}"
+        )
 
-# ── Endpoints ─────────────────────────────────────────────────────────────────
+    return response.json()
+
+
+def read_validation_file(batch_id: str):
+    validation_file = CURATED_DIR / batch_id / "validation_llm.json"
+    if not validation_file.exists():
+        return None
+
+    with open(validation_file, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def read_structured_documents(batch_id: str):
+    scenario_dir = CURATED_DIR / batch_id
+    if not scenario_dir.exists():
+        return []
+
+    docs = []
+    for file_path in scenario_dir.glob("*_structured.json"):
+        with open(file_path, "r", encoding="utf-8") as f:
+            docs.append(json.load(f))
+    return docs
+
+
 @app.get("/health")
 def health():
-    """Santé du service."""
-    return {"status": "ok", "version": "1.0.0"}
+    return {"status": "ok"}
 
 
-@app.post("/upload", response_model=ProcessingResult)
-async def upload_documents(files: list[UploadFile] = File(...)):
-    """
-    Reçoit 1 à N fichiers (PDF, PNG, JPG…).
-
-    Pipeline par fichier :
-      1. OCR Tesseract (multi-pipeline, meilleure confiance)
-      2. Normalisation texte
-      3. Extraction des champs par regex
-      4. Validation LLM HuggingFace sur le bundle complet
-
-    Retourne un ProcessingResult compatible avec le front React.
-    """
+@app.post("/pipeline/run")
+async def pipeline_run(files: List[UploadFile] = File(...)):
     if not files:
-        raise HTTPException(status_code=400, detail="Aucun fichier reçu.")
+        raise HTTPException(status_code=400, detail="Aucun fichier reçu")
 
-    batch_id = f"batch_{uuid.uuid4().hex[:8]}"
-    documents: list[DocumentData] = []
+    ensure_dirs()
 
-    # ── Étape 1 & 2 & 3 : OCR + extraction par fichier ────────────────────
-    for upload in files:
-        content = await upload.read()
-        filename = upload.filename or "document"
-        logger.info("[%s] Traitement OCR : %s", batch_id, filename)
-        doc = _process_one_file(content, filename)
-        documents.append(doc)
-        logger.info("[%s] Extrait : type=%s siren=%s", batch_id, doc.document_type, doc.extracted_fields.siren)
+    batch_id = f"client_{uuid.uuid4().hex[:8]}"
+    save_uploaded_files(batch_id, files)
+    dag_run = trigger_airflow_dag(batch_id)
 
-    # ── Étape 4 : Validation LLM ───────────────────────────────────────────
-    logger.info("[%s] Validation LLM (%d documents)…", batch_id, len(documents))
-    try:
-        bundle = _build_llm_bundle(batch_id, documents)
-        llm_result = validate_bundle_with_llm(bundle)
-        validation = _llm_result_to_validation(llm_result)
-    except Exception as e:
-        logger.warning("[%s] LLM indisponible (%s) — fallback règles simples", batch_id, e)
-        validation = _fallback_validation(documents)
-
-    result = ProcessingResult(
-        batch_id=batch_id,
-        documents=documents,
-        validation=validation,
-    )
-    batches[batch_id] = result.model_dump()
-    return result
-
-
-@app.get("/batch/{batch_id}", response_model=ProcessingResult)
-def get_batch(batch_id: str):
-    """Récupère un résultat de traitement par son batch_id."""
-    if batch_id not in batches:
-        raise HTTPException(status_code=404, detail="Batch introuvable.")
-    return batches[batch_id]
-
-
-@app.get("/batches", response_model=list[str])
-def list_batches():
-    """Liste tous les batch_ids en mémoire."""
-    return list(batches.keys())
-
-
-@app.post("/dataset/validate")
-async def validate_from_dataset(payload: list[dict]):
-    """
-    Valide un bundle déjà structuré (ex : issu du pipeline build_curated).
-    Attend le même format que validate_bundle_with_llm :
-    [{ "document_id": ..., "document_type": ..., "fields": {...} }, ...]
-
-    Utile pour tester le LLM directement sans re-OCR.
-    """
-    if not payload:
-        raise HTTPException(status_code=400, detail="Payload vide.")
-    bundle = {
-        "scenario_id": f"manual_{uuid.uuid4().hex[:6]}",
-        "documents": payload,
+    return {
+        "batch_id": batch_id,
+        "dag_run_id": dag_run.get("dag_run_id"),
+        "status": dag_run.get("state", "queued"),
     }
-    try:
-        result = validate_bundle_with_llm(bundle)
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Erreur LLM : {e}")
-    return result
 
 
-# ── Fallback validation (si LLM indisponible) ─────────────────────────────────
-def _fallback_validation(documents: list[DocumentData]) -> ValidationResult:
-    """Règles déterministes de secours si le LLM ne répond pas."""
-    anomalies: list[str] = []
+@app.get("/pipeline/status/{batch_id}")
+def pipeline_status(batch_id: str):
+    validation = read_validation_file(batch_id)
+    documents = read_structured_documents(batch_id)
 
-    sirens = {d.extracted_fields.siren for d in documents if d.extracted_fields.siren}
-    if len(sirens) > 1:
-        anomalies.append("SIREN incohérent entre les documents du lot")
+    status = "running"
+    if validation is not None:
+        status = "finished"
 
-    sirets = {d.extracted_fields.siret for d in documents if d.extracted_fields.siret}
-    if len(sirets) > 1:
-        anomalies.append("SIRET incohérent entre les documents du lot")
+    return {
+        "batch_id": batch_id,
+        "status": status,
+        "documents_count": len(documents),
+        "has_validation": validation is not None,
+    }
 
-    for doc in documents:
-        if doc.document_type == "facture":
-            f = doc.extracted_fields
-            if f.sous_total_ht and f.tva_montant and f.total_ttc:
-                expected = round(f.sous_total_ht + f.tva_montant, 2)
-                if abs(expected - f.total_ttc) > 0.05:
-                    anomalies.append(
-                        f"[{doc.filename}] TTC incohérent : {f.sous_total_ht} + {f.tva_montant} ≠ {f.total_ttc}"
-                    )
 
-    status = "conforme" if not anomalies else ("à vérifier" if len(anomalies) <= 2 else "non_conforme")
-    return ValidationResult(
-        status=status,
-        anomalies=anomalies,
-        checks=None,
-        confidence=None,
-    )
+@app.get("/results")
+def get_results():
+    ensure_dirs()
+    results = []
+
+    if not CURATED_DIR.exists():
+        return results
+
+    for batch_dir in CURATED_DIR.iterdir():
+        if not batch_dir.is_dir():
+            continue
+
+        results.append({
+            "batch_id": batch_dir.name,
+            "documents": read_structured_documents(batch_dir.name),
+            "validation": read_validation_file(batch_dir.name),
+        })
+
+    return results
+
+
+@app.get("/results/{batch_id}")
+def get_result(batch_id: str):
+    documents = read_structured_documents(batch_id)
+    validation = read_validation_file(batch_id)
+
+    if not documents and validation is None:
+        raise HTTPException(status_code=404, detail="Résultat introuvable")
+
+    return {
+        "batch_id": batch_id,
+        "documents": documents,
+        "validation": validation,
+    }

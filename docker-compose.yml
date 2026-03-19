@@ -9,10 +9,10 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
+    AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
     HF_TOKEN: ${HF_TOKEN:-MonToken}
     MONGO_URI: mongodb://mongo:27017
     MONGO_DB: hkt_mia
-    AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
     PYTHONPATH: /opt/airflow
   volumes:
     - ./dags:/opt/airflow/dags
@@ -21,6 +21,7 @@ x-airflow-common:
     - ./data:/opt/airflow/data
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
+    - ./backend:/opt/airflow/backend
   depends_on:
     &airflow-common-depends-on
     postgres:
@@ -68,7 +69,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - "8080:8080"
+      - "8081:8080"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -90,6 +91,32 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      AIRFLOW_BASE_URL: http://airflow-webserver:8080
+      AIRFLOW_USERNAME: admin
+      AIRFLOW_PASSWORD: admin
+      AIRFLOW_DAG_ID: hkt_mia_pipeline
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: hkt_mia
+      PYTHONPATH: /app
+    volumes:
+      - ./backend:/app/backend
+      - ./scripts:/app/scripts
+      - ./services:/app/services
+      - ./data:/app/data
+    depends_on:
+      - airflow-webserver
+      - mongo
+    restart: unless-stopped
+
   mongo:
     image: mongo:7
     ports:
@@ -98,11 +125,25 @@ services:
       - mongo-data:/data/db
     restart: always
 
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - "8082:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_BASICAUTH: "false"
+    depends_on:
+      - mongo
+    restart: always
+
   frontend:
     build: ./frontend
     ports:
       - "5173:80"
     restart: always
+    depends_on:
+      - backend
 
 volumes:
   postgres-db-volume:

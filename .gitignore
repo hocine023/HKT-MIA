@@ -1,3 +1,61 @@
-.pylibs/
-StockUniteLegale_utf8.csv
-dataset/
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Airflow / logs
+logs/
+airflow-webserver.pid
+airflow-scheduler.pid
+
+# Local runtime / temp
+*.log
+*.tmp
+*.temp
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Backend / Python envs
+.venv/
+venv/
+env/
+
+# Generated data zones
+data/clean/
+data/curated/
+data/curated_llm/
+data/raw/client_*/
+data/raw/*/clean/*.png
+data/raw/*/noisy/
+
+# If you want to keep only handcrafted sample scenarios, do NOT ignore all raw/
+# Otherwise uncomment the next line:
+# data/raw/
+
+# Mongo / db local artifacts if any
+mongo-data/
+postgres-db-volume/
+
+# Compiled / cache inside project
+dags/__pycache__/
+plugins/__pycache__/
+services/__pycache__/
+backend/__pycache__/
+
+# Coverage / test
+.coverage
+pytest_cache/

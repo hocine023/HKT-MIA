@@ -1,5 +1,6 @@
 import sys
 import json
+import argparse
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,7 +13,7 @@ CLEAN_DIR = BASE_DIR / "data" / "clean"
 CURATED_DIR = BASE_DIR / "data" / "curated"
 
 
-def build_curated_file(clean_file: Path):
+def build_curated_file(clean_file: Path, batch_id: str):
     with open(clean_file, "r", encoding="utf-8") as f:
         clean_payload = json.load(f)
 
@@ -43,8 +44,7 @@ def build_curated_file(clean_file: Path):
             "fournisseur": None,
         }
 
-    scenario_dir = clean_file.parent.name
-    out_dir = CURATED_DIR / scenario_dir
+    out_dir = CURATED_DIR / batch_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
     base_name = clean_file.stem.replace("_ocr", "")
@@ -57,6 +57,7 @@ def build_curated_file(clean_file: Path):
         "ocr_engine": clean_payload.get("ocr_engine"),
         "document_type_hint": clean_payload.get("document_type_hint"),
         "document_type": extracted.get("document_type"),
+        "batch_id": batch_id,
         "extracted_fields": {
             "numero": extracted.get("numero"),
             "emetteur": extracted.get("emetteur"),
@@ -75,23 +76,38 @@ def build_curated_file(clean_file: Path):
             "tva_montant": extracted.get("tva_montant"),
             "fournisseur": extracted.get("fournisseur"),
         },
-       
     }
 
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    # Store in MongoDB curated_zone
     col = get_collection("curated_zone")
     col.update_one({"document_id": payload["document_id"]}, {"$set": payload}, upsert=True)
 
     print(f"[CURATED] {out_file}")
 
 
+def process_batch(batch_id: str):
+    batch_clean_dir = CLEAN_DIR / batch_id
+    if not batch_clean_dir.exists() or not batch_clean_dir.is_dir():
+        raise FileNotFoundError(f"Batch clean introuvable: {batch_clean_dir}")
+
+    for clean_file in batch_clean_dir.glob("*_ocr.json"):
+        build_curated_file(clean_file, batch_id)
+
+
 def process_all():
     for clean_file in CLEAN_DIR.rglob("*_ocr.json"):
-        build_curated_file(clean_file)
+        batch_id = clean_file.parent.name
+        build_curated_file(clean_file, batch_id)
 
 
 if __name__ == "__main__":
-    process_all()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--batch-id", required=False)
+    args = parser.parse_args()
+
+    if args.batch_id:
+        process_batch(args.batch_id)
+    else:
+        process_all()

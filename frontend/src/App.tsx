@@ -12,8 +12,8 @@ function App() {
       <div className="min-h-screen bg-slate-50 font-sans">
         <nav className="p-4 bg-white shadow-sm border-b flex gap-4 justify-center sticky top-0 z-50">
           <NavLink to="/" className={navClass}>Upload & IA</NavLink>
-          <NavLink to="/crm" className={navClass}>App CRM (Simulée)</NavLink>
-          <NavLink to="/conformite" className={navClass}>App Conformité (Simulée)</NavLink>
+          <NavLink to="/crm" className={navClass}>App CRM </NavLink>
+          <NavLink to="/conformite" className={navClass}>App Conformité </NavLink>
         </nav>
         
         <main className="pt-8">

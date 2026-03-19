@@ -1,5 +1,6 @@
 import sys
 import json
+import argparse
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +39,6 @@ def validate_scenario(scenario_dir: Path):
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    # Store validation in MongoDB curated_zone
     col = get_collection("curated_zone")
     col.update_one(
         {"scenario_id": bundle["scenario_id"], "_type": "validation"},
@@ -49,6 +49,13 @@ def validate_scenario(scenario_dir: Path):
     print(f"[VALIDATION_LLM] {output_file}")
 
 
+def process_batch(batch_id: str):
+    scenario_dir = CURATED_DIR / batch_id
+    if not scenario_dir.exists() or not scenario_dir.is_dir():
+        raise FileNotFoundError(f"Batch curated introuvable: {scenario_dir}")
+    validate_scenario(scenario_dir)
+
+
 def process_all():
     for scenario_dir in CURATED_DIR.iterdir():
         if scenario_dir.is_dir():
@@ -56,4 +63,11 @@ def process_all():
 
 
 if __name__ == "__main__":
-    process_all()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--batch-id", required=False)
+    args = parser.parse_args()
+
+    if args.batch_id:
+        process_batch(args.batch_id)
+    else:
+        process_all()

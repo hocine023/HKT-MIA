@@ -1,47 +1,139 @@
-import { useStore } from '../store';
-import { Database } from 'lucide-react';
+import { useStore } from "../store";
+import { Database } from "lucide-react";
 
 export const CRMPage = () => {
   const { currentBatch } = useStore();
-  const docs = currentBatch?.documents ?? [];
+
+  console.log("CRM currentBatch =", currentBatch);
+
+  const docs = Array.isArray(currentBatch?.documents)
+    ? currentBatch.documents
+    : [];
 
   return (
-    <div className="p-8 max-w-4xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
+    <div className="p-8 max-w-4xl mx-auto">
       <div className="flex items-center gap-3 mb-8 border-b pb-4">
         <Database className="text-blue-600" size={32} />
-        <h1 className="text-2xl font-bold text-slate-800">2. CRM - Fiches Fournisseurs</h1>
-        <span className="ml-auto px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wide">Auto-rempli par IA</span>
+        <h1 className="text-2xl font-bold text-slate-800">
+          2. CRM - Fiches Fournisseurs
+        </h1>
       </div>
-      
-      {docs.length === 0 ? (
-        <p className="text-slate-500 bg-slate-50 p-6 rounded-lg border text-center">Aucune donnée disponible. Lancez un traitement d'abord.</p>
+
+      {!currentBatch ? (
+        <div className="bg-white p-6 rounded-xl border">
+          <p className="text-slate-500">Aucun batch chargé dans le store.</p>
+        </div>
+      ) : docs.length === 0 ? (
+        <div className="bg-white p-6 rounded-xl border">
+          <p className="text-slate-500">
+            Batch chargé, mais aucun document disponible.
+          </p>
+
+          <pre className="mt-4 bg-slate-50 rounded-xl p-4 text-xs overflow-auto">
+            {JSON.stringify(currentBatch, null, 2)}
+          </pre>
+        </div>
       ) : (
         <div className="space-y-6">
-          {docs.map((doc) => (
-            <div key={doc.document_id} className="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-              <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4">
-                {doc.document_type} — {doc.document_id}
-              </h3>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Raison Sociale</label>
-                  <p className="text-lg font-semibold text-slate-900">{doc.extracted_fields.company_name || '-'}</p>
+          {docs.map((doc: any, index: number) => {
+            const fields = doc?.extracted_fields ?? {};
+            const displayName =
+              fields?.emetteur || fields?.fournisseur || "-";
+
+            return (
+              <div
+                key={doc?.document_id ?? index}
+                className="bg-white p-8 rounded-xl shadow-sm border border-slate-200"
+              >
+                <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4">
+                  {doc?.document_type || "document"} — {doc?.document_id || index}
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Raison Sociale
+                    </label>
+                    <p className="text-lg font-semibold text-slate-900">
+                      {displayName}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      SIRET
+                    </label>
+                    <p className="text-lg font-mono text-slate-900">
+                      {fields?.siret ?? "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      SIREN
+                    </label>
+                    <p className="text-lg font-mono text-slate-900">
+                      {fields?.siren ?? "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Client
+                    </label>
+                    <p className="text-lg text-slate-900">
+                      {fields?.client ?? "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Montant HT
+                    </label>
+                    <p className="text-lg text-slate-900">
+                      {fields?.sous_total_ht != null ? `${fields.sous_total_ht} €` : "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Montant TTC
+                    </label>
+                    <p className="text-lg text-slate-900">
+                      {fields?.total_ttc != null ? `${fields.total_ttc} €` : "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Date
+                    </label>
+                    <p className="text-lg text-slate-900">
+                      {fields?.date ?? "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Type document
+                    </label>
+                    <p className="text-lg text-slate-900">
+                      {doc?.document_type ?? "-"}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">N° SIRET</label>
-                  <p className="text-lg font-mono text-slate-900">{doc.extracted_fields.siret || '-'}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Montant HT</label>
-                  <p className="text-lg font-semibold text-slate-900">{doc.extracted_fields.montant_ht ? `${doc.extracted_fields.montant_ht} €` : '-'}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Montant TTC</label>
-                  <p className="text-lg font-semibold text-slate-900">{doc.extracted_fields.montant_ttc ? `${doc.extracted_fields.montant_ttc} €` : '-'}</p>
-                </div>
+
+                <details className="mt-6">
+                  <summary className="cursor-pointer text-sm text-slate-500">
+                    Voir JSON brut
+                  </summary>
+                  <pre className="mt-3 bg-slate-50 rounded-xl p-4 text-xs overflow-auto">
+                    {JSON.stringify(doc, null, 2)}
+                  </pre>
+                </details>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

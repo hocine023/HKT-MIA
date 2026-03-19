@@ -1,27 +1,38 @@
-import { useStore } from '../store';
-import { useNavigate } from 'react-router-dom';
-import { FileUp, Loader2, CheckCircle2, XCircle } from 'lucide-react';
-import { triggerDag, getDagRunStatus, fetchAllResults } from '../api';
-import { useRef, useState, useCallback } from 'react';
+import { useStore } from "../store";
+import { useNavigate } from "react-router-dom";
+import { FileUp, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import {
+  runPipeline,
+  getPipelineStatus,
+  fetchScenarioResults,
+  fetchAllResults,
+} from "../api";
+import { useRef, useState, useCallback } from "react";
 
 const POLL_INTERVAL_MS = 3000;
+const MAX_POLL_ATTEMPTS = 30;
 
 export const UploadPage = () => {
-  const { setBatch, isLoading, setLoading, dagState, setDagRun, error, setError } = useStore();
+  const { setBatch, isLoading, setLoading, error, setError } = useStore();
   const navigate = useNavigate();
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [pipelineState, setPipelineState] = useState<string | null>(null);
+  const [currentBatchId, setCurrentBatchId] = useState<string | null>(null);
 
   const onFilesSelected = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
     setSelectedFiles(Array.from(files));
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    onFilesSelected(e.dataTransfer.files);
-  }, [onFilesSelected]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      onFilesSelected(e.dataTransfer.files);
+    },
+    [onFilesSelected]
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -34,87 +45,80 @@ export const UploadPage = () => {
     }
   };
 
+  const mapScenarioResultToStoreBatch = (scenarioResult: any) => {
+    return {
+      batch_id: scenarioResult.batch_id,
+      documents: scenarioResult.documents ?? [],
+      validation: scenarioResult.validation ?? {
+        global_status: "a_verifier",
+        anomalies: [],
+        checks: [],
+      },
+    };
+  };
+
   const handleProcess = async () => {
+    if (selectedFiles.length === 0) {
+      setError("Veuillez sélectionner 3 fichiers avant de lancer le pipeline.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
+    setPipelineState("uploading");
 
     try {
-      const run = await triggerDag();
-      setDagRun(run.dag_run_id, run.state);
+      const run = await runPipeline(selectedFiles);
+      setCurrentBatchId(run.batch_id);
+      setPipelineState(run.status || "queued");
 
-      // Poll until DAG finishes
+      let attempts = 0;
+
       pollingRef.current = setInterval(async () => {
         try {
-          const status = await getDagRunStatus(run.dag_run_id);
-          setDagRun(status.dag_run_id, status.state);
+          attempts += 1;
 
-          if (status.state === 'success') {
+          const status = await getPipelineStatus(run.batch_id);
+          const state = String(status.status ?? "running");
+          setPipelineState(state);
+
+          if (state === "finished") {
             stopPolling();
-            // Fetch results from MongoDB via Airflow plugin
-            const data = await fetchAllResults();
 
-            // Map to ProcessingResult
-            const docs = data.documents
-              .filter((d: Record<string, unknown>) => (d as { _type?: string })._type !== 'validation')
-              .map((d: Record<string, unknown>) => {
-                const ef = (d.extracted_fields ?? {}) as Record<string, unknown>;
-                return {
-                  document_id: String(d.document_id ?? ''),
-                  filename: String(d.source_raw_file ?? d.document_id ?? ''),
-                  document_type: String(d.document_type ?? ''),
-                  extracted_fields: {
-                    company_name: (ef.emetteur ?? ef.fournisseur) as string | undefined,
-                    siret: ef.siret as string | undefined,
-                    montant_ht: ef.sous_total_ht as number | undefined,
-                    montant_ttc: ef.total_ttc as number | undefined,
-                  },
-                };
-              });
+            const scenarioResult = await fetchScenarioResults(run.batch_id);
+            setBatch(mapScenarioResultToStoreBatch(scenarioResult));
 
-            const validation = data.validations[0] as Record<string, unknown> | undefined;
-            const anomalies: string[] = [];
-            if (validation?.anomalies && Array.isArray(validation.anomalies)) {
-              for (const a of validation.anomalies as Array<Record<string, unknown>>) {
-                anomalies.push(String(a.description ?? a));
-              }
-            }
-
-            const globalStatus = String(validation?.global_status ?? '');
-            const status = globalStatus === 'conforme' ? 'conforme'
-              : globalStatus === 'non_conforme' ? 'non_conforme'
-              : 'à vérifier';
-
-            setBatch({
-              batch_id: run.dag_run_id,
-              documents: docs,
-              validation: {
-                status,
-                anomalies,
-              },
-            });
+            // refresh global list if your store/page uses it later
+            await fetchAllResults();
 
             setLoading(false);
-            navigate('/crm');
-          } else if (status.state === 'failed') {
+            navigate("/crm");
+            return;
+          }
+
+          if (attempts >= MAX_POLL_ATTEMPTS) {
             stopPolling();
-            setError('Le pipeline a échoué. Vérifiez les logs Airflow.');
+            setError("Le pipeline est toujours en cours. Réessayez dans quelques instants.");
             setLoading(false);
           }
         } catch (err) {
           stopPolling();
-          setError(String(err));
+          setError(err instanceof Error ? err.message : "Erreur pendant le polling du pipeline.");
           setLoading(false);
         }
       }, POLL_INTERVAL_MS);
     } catch (err) {
-      setError(String(err));
+      stopPolling();
+      setError(err instanceof Error ? err.message : "Erreur au lancement du pipeline.");
       setLoading(false);
     }
   };
 
   return (
     <div className="p-8 max-w-2xl mx-auto text-center animate-in fade-in duration-500">
-      <h1 className="text-3xl font-bold mb-8 text-slate-800">1. Ingestion & Traitement IA</h1>
+      <h1 className="text-3xl font-bold mb-8 text-slate-800">
+        1. Ingestion & Traitement IA
+      </h1>
 
       <input
         ref={fileInputRef}
@@ -131,25 +135,40 @@ export const UploadPage = () => {
         onDragOver={handleDragOver}
         className="border-4 border-dashed border-slate-300 hover:border-blue-500 transition-colors p-16 rounded-2xl mb-8 bg-white cursor-pointer group flex flex-col items-center gap-4"
       >
-        <FileUp size={64} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
-        <p className="text-xl text-slate-600 font-medium">Glissez ou cliquez pour ajouter vos documents</p>
+        <FileUp
+          size={64}
+          className="text-slate-400 group-hover:text-blue-500 transition-colors"
+        />
+        <p className="text-xl text-slate-600 font-medium">
+          Glissez ou cliquez pour ajouter vos documents
+        </p>
         <p className="text-sm text-slate-400">(PDF, PNG, JPG)</p>
       </div>
 
       {selectedFiles.length > 0 && (
         <div className="mb-6 text-left bg-white border border-slate-200 rounded-xl p-4">
-          <p className="text-sm font-bold text-slate-500 mb-2">{selectedFiles.length} fichier(s) sélectionné(s) :</p>
+          <p className="text-sm font-bold text-slate-500 mb-2">
+            {selectedFiles.length} fichier(s) sélectionné(s) :
+          </p>
           <ul className="space-y-1">
             {selectedFiles.map((f, i) => (
-              <li key={i} className="text-sm text-slate-700 font-mono truncate">• {f.name}</li>
+              <li key={i} className="text-sm text-slate-700 font-mono truncate">
+                • {f.name}
+              </li>
             ))}
           </ul>
         </div>
       )}
 
-      {dagState && isLoading && (
+      {pipelineState && isLoading && (
         <p className="mb-4 text-sm text-blue-600 font-medium">
-          Pipeline : <span className="font-mono">{dagState}</span>
+          Pipeline : <span className="font-mono">{pipelineState}</span>
+        </p>
+      )}
+
+      {currentBatchId && (
+        <p className="mb-4 text-sm text-slate-500">
+          Batch ID : <span className="font-mono">{currentBatchId}</span>
         </p>
       )}
 
@@ -159,7 +178,7 @@ export const UploadPage = () => {
         </div>
       )}
 
-      {dagState === 'success' && !isLoading && (
+      {pipelineState === "finished" && !isLoading && (
         <div className="mb-4 p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2 justify-center">
           <CheckCircle2 size={18} /> Pipeline terminé avec succès
         </div>
@@ -170,7 +189,14 @@ export const UploadPage = () => {
         disabled={isLoading}
         className="px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-3 mx-auto transition-all"
       >
-        {isLoading ? <Loader2 className="animate-spin" /> : "Lancer l'Extraction OCR & Validation"}
+        {isLoading ? (
+          <>
+            <Loader2 className="animate-spin" />
+            Traitement en cours...
+          </>
+        ) : (
+          "Lancer le pipeline"
+        )}
       </button>
     </div>
   );
